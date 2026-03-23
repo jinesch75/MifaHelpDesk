@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Suivi des Activités — MIFA</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -152,22 +153,6 @@
     }
     .c-del:hover { color: #c0392b; }
 
-    /* ── CUSTOM SECTION ── */
-    .custom-area {
-      padding: 8px 18px 12px; border-top: 2px dashed #ececec;
-      background: #fafafa;
-    }
-    .custom-title {
-      font-size: 10.5px; font-weight: 700; color: #bbb;
-      text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px;
-    }
-    .btn-add-cat {
-      width: 100%; background: none; border: 2px dashed #d5d5d5;
-      border-radius: 7px; padding: 7px 12px; color: #bbb; font-size: 12px;
-      cursor: pointer; text-align: left; transition: all 0.18s; margin-top: 3px;
-    }
-    .btn-add-cat:hover { border-color: #2471a3; color: #2471a3; background: #f0f6ff; }
-
     /* ── OVERVIEW ── */
     .overview-section {
       background: white; border-radius: 14px;
@@ -198,7 +183,24 @@
       font-weight: 700; cursor: pointer; transition: background 0.2s;
     }
     .btn-excel:hover { background: #196f3d; }
-    .table-wrap { overflow-x: auto; }
+
+    /* Overview sub-section labels */
+    .ov-type-label {
+      font-size: 13px; font-weight: 700;
+      padding: 6px 0 8px;
+      border-bottom: 2px solid;
+      margin-bottom: 10px;
+    }
+    .ov-type-label.appels { color: #1a3a6b; border-color: #dbeeff; }
+    .ov-type-label.emails { color: #6d3b8f; border-color: #f0e6ff; }
+
+    /* Two-column layout for individual worker overview */
+    .ov-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 860px) { .ov-split { grid-template-columns: 1fr; } }
 
     table.ov { width: 100%; border-collapse: collapse; font-size: 12px; }
     table.ov th {
@@ -206,10 +208,12 @@
       color: #555; border-bottom: 2px solid #ddd; white-space: nowrap;
       background: #f2f6fa;
     }
-    table.ov th.col-d   { text-align: left; background: #e8f0f8; color: #1a3a6b; min-width: 120px; }
+    table.ov th.col-d   { text-align: left; background: #e8f0f8; color: #1a3a6b; min-width: 100px; }
     table.ov th.grp-ap  { background: #dbeeff; color: #1a3a6b; }
     table.ov th.grp-em  { background: #f0e6ff; color: #6c3483; }
     table.ov th.grp-tot { background: #d5f5e3; color: #1a5e20; }
+    table.ov th.grp-ms  { background: #dbeeff; color: #1a3a6b; }
+    table.ov th.grp-mp  { background: #f0e6ff; color: #6c3483; }
     table.ov td {
       padding: 7px 9px; text-align: center; border-bottom: 1px solid #f0f0f0;
     }
@@ -226,6 +230,15 @@
     table.ov tfoot td.col-d { text-align: left; }
     .empty { text-align: center; padding: 32px; color: #bbb; font-size: 13px; }
 
+    /* ── CHART ── */
+    .chart-section {
+      background: white; border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.09);
+      padding: 18px 22px; margin-bottom: 20px;
+    }
+    .chart-title { font-size: 15px; font-weight: 700; color: #1a3a6b; margin-bottom: 16px; }
+    .chart-wrap { position: relative; height: 280px; }
+
     /* ── TOAST ── */
     .toast {
       position: fixed; bottom: 20px; right: 20px;
@@ -236,27 +249,6 @@
       transition: all 0.25s ease; z-index: 9999; pointer-events: none;
     }
     .toast.show { transform: translateY(0); opacity: 1; }
-
-    /* ── MODAL ── */
-    .overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.4); z-index: 1000;
-      align-items: center; justify-content: center;
-    }
-    .overlay.open { display: flex; }
-    .modal {
-      background: white; border-radius: 13px; padding: 24px 26px;
-      width: 340px; max-width: 92%; box-shadow: 0 8px 28px rgba(0,0,0,0.2);
-    }
-    .modal h3 { font-size: 15px; color: #1a3a6b; margin-bottom: 14px; }
-    .modal input {
-      width: 100%; padding: 9px 12px; border: 2px solid #ddd; border-radius: 8px;
-      font-size: 14px; outline: none; margin-bottom: 14px; transition: border-color 0.2s;
-    }
-    .modal input:focus { border-color: #2471a3; }
-    .modal-btns { display: flex; gap: 9px; justify-content: flex-end; }
-    .btn-cancel { padding: 7px 15px; border: 2px solid #ddd; border-radius: 7px; background: none; color: #666; cursor: pointer; font-size: 13px; font-weight: 600; }
-    .btn-ok     { padding: 7px 15px; border: none; border-radius: 7px; background: #2471a3; color: white; cursor: pointer; font-size: 13px; font-weight: 700; }
 
     /* ── LOADING ── */
     .loading-screen {
@@ -274,7 +266,7 @@
 </head>
 <body>
 
-<!-- Loading overlay (shown until socket delivers state) -->
+<!-- Loading overlay -->
 <div class="loading-screen" id="loadingScreen">
   <div class="spinner"></div>
   <div>Connexion au serveur…</div>
@@ -320,23 +312,19 @@
         <button class="btn-excel" id="btnExcel">⬇ Excel</button>
       </div>
     </div>
-    <div class="table-wrap" id="ovWrap"></div>
+    <div id="ovWrap"></div>
+  </div>
+
+  <!-- Progress Chart -->
+  <div class="chart-section" id="chartSection" style="display:none">
+    <div class="chart-title">📈 Progression par jour</div>
+    <div class="chart-wrap">
+      <canvas id="progressChart"></canvas>
+    </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
-
-<!-- Add category modal -->
-<div class="overlay" id="modalCat">
-  <div class="modal">
-    <h3 id="modalCatTitle">Nouvelle catégorie</h3>
-    <input type="text" id="inputCat" placeholder="Nom de la catégorie…" />
-    <div class="modal-btns">
-      <button class="btn-cancel" id="modalCancel">Annuler</button>
-      <button class="btn-ok"     id="modalOk">Ajouter</button>
-    </div>
-  </div>
-</div>
 
 <script>
 /* ══════════════════════════════════════════════════
@@ -345,24 +333,22 @@
 const WORKERS = ['Marc S.', 'Marc P.'];
 
 const FIXED = [
-  { id: 'cai',            label: "CAI (Contrat d'Accueil et d'Intégration)" },
+  { id: 'cai',            label: "CAI" },
   { id: 'nationalite',    label: 'Nationalité' },
   { id: 'code_langue',    label: 'Codes langue' },
-  { id: 'participation',  label: 'Participation à une activité' },
+  { id: 'participation',  label: 'Participation' },
   { id: 'cours_civiques', label: 'Cours civiques' },
-  { id: 'orientation',    label: "Journée d'orientation" },
+  { id: 'orientation',    label: "Orientation" },
 ];
 
 /* ══════════════════════════════════════════════════
-   STATE  (synced from server)
+   STATE
 ══════════════════════════════════════════════════ */
 let S = {
   date:       today(),
   period:     7,
   tab:        'all',
-  addCatType: null,
-  // These come from the server:
-  customCats: { appels: [], emails: [] },   // GLOBAL — shared across workers
+  customCats: { appels: [], emails: [] },
   workerData: {}
 };
 
@@ -439,13 +425,13 @@ function getVal(day, type, id) {
 function dayTotal(day, type) {
   if (!day) return 0;
   let t = 0;
-  const f = day[type]         || {};  for (const k in f) t += (f[k]||0);
-  const c = day[type+'_custom']|| {};  for (const k in c) t += (c[k]||0);
+  const f = day[type]          || {}; for (const k in f) t += (f[k]||0);
+  const c = day[type+'_custom'] || {}; for (const k in c) t += (c[k]||0);
   return t;
 }
 
 /* ══════════════════════════════════════════════════
-   COUNTER ACTIONS  — optimistic update + emit
+   COUNTER ACTIONS
 ══════════════════════════════════════════════════ */
 function change(worker, type, id, delta) {
   const day = ensureDayLocal(worker, S.date);
@@ -454,57 +440,6 @@ function change(worker, type, id, delta) {
   renderAll();
   flashSaving();
   socket.emit('update_counter', { worker, date: S.date, type, catId: id, isCustom: false, delta });
-}
-function changeCustom(worker, type, name, delta) {
-  const day = ensureDayLocal(worker, S.date);
-  const ck  = type + '_custom';
-  if (!day[ck]) day[ck] = {};
-  day[ck][name] = Math.max(0, (day[ck][name]||0) + delta);
-  renderAll();
-  flashSaving();
-  socket.emit('update_counter', { worker, date: S.date, type, catId: name, isCustom: true, delta });
-}
-
-/* ══════════════════════════════════════════════════
-   CUSTOM CATEGORIES (global — shared between workers)
-══════════════════════════════════════════════════ */
-function openAddCatModal(type) {
-  S.addCatType = type;
-  const labels = { appels: "d'appels", emails: "d'e-mails" };
-  document.getElementById('modalCatTitle').textContent =
-    `Nouvelle catégorie ${labels[type]} (pour tous les travailleurs)`;
-  document.getElementById('inputCat').value = '';
-  document.getElementById('modalCat').classList.add('open');
-  setTimeout(() => document.getElementById('inputCat').focus(), 80);
-}
-function confirmCat() {
-  const name = document.getElementById('inputCat').value.trim();
-  if (!name || !S.addCatType) return;
-  const type = S.addCatType;
-  if (!S.customCats[type].includes(name)) {
-    S.customCats[type].push(name);   // optimistic
-    renderWorkers();
-  }
-  socket.emit('add_cat', { type, name });
-  closeModal();
-  toast(`✅ Catégorie "${name}" ajoutée`);
-}
-function deleteCat(type, name) {
-  if (!confirm(`Supprimer la catégorie "${name}" ?\nElle sera retirée pour TOUS les travailleurs et toutes les données associées seront effacées.`)) return;
-  S.customCats[type] = S.customCats[type].filter(c => c !== name);
-  for (const wn of WORKERS) {
-    const w  = S.workerData[wn];
-    if (!w) continue;
-    const ck = type + '_custom';
-    for (const d of Object.keys(w.days || {})) {
-      if (w.days[d][ck]) delete w.days[d][ck][name];
-    }
-  }
-  renderWorkers(); renderOverview();
-  socket.emit('delete_cat', { type, name });
-}
-function closeModal() {
-  document.getElementById('modalCat').classList.remove('open');
 }
 
 /* ══════════════════════════════════════════════════
@@ -515,10 +450,11 @@ function renderAll() {
   document.getElementById('datePick').value = S.date;
   renderWorkers();
   renderOverview();
+  renderChart();
 }
+
 function renderWorkers() {
   const wrap = document.getElementById('workersWrap');
-  // Remember which sections are collapsed
   const collapsed = {};
   wrap.querySelectorAll('.worker-section').forEach(sec => {
     const nm = sec.dataset.worker;
@@ -531,21 +467,20 @@ function renderWorkers() {
 }
 
 function buildWorkerSection(workerName, isCollapsed) {
-  const day  = getDay(workerName, S.date);
-  const tA   = dayTotal(day, 'appels');
-  const tE   = dayTotal(day, 'emails');
-  const cls  = workerName === 'Marc S.' ? 'marc-s' : 'marc-p';
-  const total= tA + tE;
+  const day   = getDay(workerName, S.date);
+  const tA    = dayTotal(day, 'appels');
+  const tE    = dayTotal(day, 'emails');
+  const cls   = workerName === 'Marc S.' ? 'marc-s' : 'marc-p';
+  const total = tA + tE;
 
-  const sec  = document.createElement('div');
+  const sec = document.createElement('div');
   sec.className = 'worker-section';
   sec.dataset.worker = workerName;
 
-  /* ── Header (click to collapse/expand) ── */
   const hdr = document.createElement('div');
   hdr.className = `worker-header ${cls}`;
 
-  const nameEl  = document.createElement('div');
+  const nameEl = document.createElement('div');
   nameEl.className = 'worker-name';
   nameEl.textContent = `👤 ${workerName}`;
 
@@ -560,7 +495,6 @@ function buildWorkerSection(workerName, isCollapsed) {
   hdr.append(nameEl, totEl, chevron);
   sec.appendChild(hdr);
 
-  /* ── Body ── */
   const body = document.createElement('div');
   body.className = 'worker-body' + (isCollapsed ? ' collapsed' : '');
   body.appendChild(buildActCard(workerName, 'appels', day, tA));
@@ -583,7 +517,6 @@ function buildActCard(workerName, type, day, subTotal) {
   const card = document.createElement('div');
   card.className = 'act-card';
 
-  /* Card header */
   const ch = document.createElement('div');
   ch.className = `act-card-head ${type}`;
   ch.innerHTML = `<span>${icon}</span><span style="flex:1">${title}</span>`;
@@ -593,72 +526,25 @@ function buildActCard(workerName, type, day, subTotal) {
   ch.appendChild(stEl);
   card.appendChild(ch);
 
-  /* ── Fixed rows ── */
   for (const cat of FIXED) {
     card.appendChild(makeCounterRow(
       cat.label, false,
       getVal(day, type, cat.id),
-      (delta) => change(workerName, type, cat.id, delta),
-      null
+      (delta) => change(workerName, type, cat.id, delta)
     ));
   }
-
-  /* ── Custom area ── */
-  const cArea = document.createElement('div');
-  cArea.className = 'custom-area';
-
-  const cTitle = document.createElement('div');
-  cTitle.className = 'custom-title';
-  cTitle.textContent = 'Autres catégories';
-  cArea.appendChild(cTitle);
-
-  for (const name of (S.customCats[type] || [])) {
-    const val = day ? ((day[type+'_custom']||{})[name]||0) : 0;
-    cArea.appendChild(makeCounterRow(
-      name, true,
-      val,
-      (delta) => changeCustom(workerName, type, name, delta),
-      () => deleteCat(type, name)
-    ));
-  }
-
-  const addBtn = document.createElement('button');
-  addBtn.className = 'btn-add-cat';
-  addBtn.textContent = '＋ Ajouter une catégorie';
-  addBtn.addEventListener('click', () => openAddCatModal(type));
-  cArea.appendChild(addBtn);
-  card.appendChild(cArea);
 
   return card;
 }
 
-/**
- * Build a single counter row.
- * @param {string}        label
- * @param {boolean}       isCustom
- * @param {number}        val
- * @param {function}      onDelta  — called with (+1 or -1)
- * @param {function|null} onDelete — if not null, show delete button
- */
-function makeCounterRow(label, isCustom, val, onDelta, onDelete) {
+function makeCounterRow(label, isCustom, val, onDelta) {
   const row = document.createElement('div');
   row.className = 'c-row';
 
-  /* Label */
   const lbl = document.createElement('div');
   lbl.className = 'c-label' + (isCustom ? ' is-custom' : '');
   lbl.textContent = label;
 
-  if (onDelete) {
-    const del = document.createElement('button');
-    del.className = 'c-del';
-    del.textContent = '×';
-    del.title = 'Supprimer cette catégorie';
-    del.addEventListener('click', (e) => { e.stopPropagation(); onDelete(); });
-    lbl.appendChild(del);
-  }
-
-  /* Controls */
   const ctrl  = document.createElement('div');
   ctrl.className = 'c-ctrl';
 
@@ -682,161 +568,309 @@ function makeCounterRow(label, isCustom, val, onDelta, onDelete) {
 }
 
 /* ══════════════════════════════════════════════════
-   OVERVIEW TABLE
+   OVERVIEW
 ══════════════════════════════════════════════════ */
-function setTab(t) {
-  S.tab = t;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  const ids = { all: 'tab-all', 'Marc S.': 'tab-marcs', 'Marc P.': 'tab-marcp' };
-  document.getElementById(ids[t])?.classList.add('active');
-  renderOverview();
-}
-function setPeriod(n) {
-  S.period = n;
-  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(n===7?'p7':n===30?'p30':'pAll')?.classList.add('active');
-  renderOverview();
-}
-
-function renderOverview() {
-  const wrap    = document.getElementById('ovWrap');
-  const workers = S.tab === 'all' ? WORKERS : [S.tab];
-  const cA      = S.customCats.appels || [];
-  const cE      = S.customCats.emails || [];
-
-  /* Collect dates */
+function getFilteredDates(workers) {
   let allDates = new Set();
   for (const wn of workers) {
     const w = S.workerData[wn];
     if (w && w.days) Object.keys(w.days).forEach(d => allDates.add(d));
   }
   let dates = [...allDates].sort().reverse();
-
   if (S.period > 0) {
     const cut = new Date(); cut.setDate(cut.getDate() - S.period + 1);
-    const cutStr = localStr(cut);
-    dates = dates.filter(d => d >= cutStr);
+    dates = dates.filter(d => d >= localStr(cut));
   }
+  return dates;
+}
 
-  if (dates.length === 0) {
-    wrap.innerHTML = '<div class="empty">Aucune donnée pour cette période.</div>';
-    return;
-  }
+function setTab(t) {
+  S.tab = t;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const ids = { all: 'tab-all', 'Marc S.': 'tab-marcs', 'Marc P.': 'tab-marcp' };
+  document.getElementById(ids[t])?.classList.add('active');
+  renderOverview();
+  renderChart();
+}
+function setPeriod(n) {
+  S.period = n;
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(n===7?'p7':n===30?'p30':'pAll')?.classList.add('active');
+  renderOverview();
+  renderChart();
+}
 
+function renderOverview() {
+  const wrap    = document.getElementById('ovWrap');
   const todayStr = today();
 
-  /* Build header */
-  let h = '<table class="ov"><thead>';
+  if (S.tab === 'all') {
+    /* ── GLOBAL VIEW: compact summary table ── */
+    const dates = getFilteredDates(WORKERS);
+
+    if (dates.length === 0) {
+      wrap.innerHTML = '<div class="empty">Aucune donnée pour cette période.</div>';
+      return;
+    }
+
+    const acc = {};
+    for (const wn of WORKERS) acc[wn] = { appels: 0, emails: 0, total: 0 };
+    let grandTotal = 0;
+
+    let h = `<table class="ov">
+      <thead>
+        <tr>
+          <th class="col-d" rowspan="2">Date</th>`;
+    for (const wn of WORKERS) {
+      const cls = wn === 'Marc S.' ? 'grp-ms' : 'grp-mp';
+      h += `<th class="${cls}" colspan="3">${wn}</th>`;
+    }
+    h += `<th class="grp-tot" rowspan="2">Grand Total</th>
+        </tr>
+        <tr>`;
+    for (const wn of WORKERS) {
+      h += `<th class="grp-ap">📞 Appels</th>
+            <th class="grp-em">✉️ E-mails</th>
+            <th class="grp-tot">Total</th>`;
+    }
+    h += `</tr>
+      </thead>
+      <tbody>`;
+
+    for (const d of dates) {
+      const isToday = d === todayStr;
+      h += `<tr class="${isToday ? 'is-today' : ''}">
+        <td class="col-d">${isToday ? '⭐ ' : ''}${fmtShort(d)}</td>`;
+      let rowGrand = 0;
+      for (const wn of WORKERS) {
+        const day = getDay(wn, d);
+        const tA  = dayTotal(day, 'appels');
+        const tE  = dayTotal(day, 'emails');
+        const t   = tA + tE;
+        acc[wn].appels += tA; acc[wn].emails += tE; acc[wn].total += t;
+        rowGrand += t;
+        h += `<td><span class="${tA ? '' : 'z'}">${tA || '—'}</span></td>
+              <td><span class="${tE ? '' : 'z'}">${tE || '—'}</span></td>
+              <td class="sub-t" style="background:#e8faf0">${t || '—'}</td>`;
+      }
+      grandTotal += rowGrand;
+      h += `<td class="sub-t" style="background:#e8faf0;font-weight:800">${rowGrand || '—'}</td>
+            </tr>`;
+    }
+
+    h += `</tbody>
+      <tfoot>
+        <tr>
+          <td class="col-d">TOTAL</td>`;
+    for (const wn of WORKERS) {
+      h += `<td>${acc[wn].appels}</td>
+            <td>${acc[wn].emails}</td>
+            <td>${acc[wn].total}</td>`;
+    }
+    h += `<td>${grandTotal}</td>
+        </tr>
+      </tfoot>
+    </table>`;
+
+    wrap.innerHTML = h;
+
+  } else {
+    /* ── INDIVIDUAL WORKER VIEW: two side-by-side tables ── */
+    const wn    = S.tab;
+    const color = wn === 'Marc S.' ? '#1a3a6b' : '#6d3b8f';
+    const dates = getFilteredDates([wn]);
+
+    if (dates.length === 0) {
+      wrap.innerHTML = '<div class="empty">Aucune donnée pour cette période.</div>';
+      return;
+    }
+
+    function buildTypeTable(type, groupCls) {
+      const accCat = {}; for (const c of FIXED) accCat[c.id] = 0;
+      let accTotal = 0;
+
+      let h = `<table class="ov">
+        <thead>
+          <tr>
+            <th class="col-d">Date</th>`;
+      for (const c of FIXED) h += `<th class="${groupCls}" style="font-size:10.5px;font-weight:600">${c.label}</th>`;
+      h += `<th class="${groupCls}">Total</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+      for (const d of dates) {
+        const isToday = d === todayStr;
+        const day = getDay(wn, d);
+        let rowTotal = 0;
+        h += `<tr class="${isToday ? 'is-today' : ''}">
+          <td class="col-d">${isToday ? '⭐ ' : ''}${fmtShort(d)}</td>`;
+        for (const c of FIXED) {
+          const v = getVal(day, type, c.id);
+          rowTotal += v; accCat[c.id] += v;
+          h += `<td><span class="${v ? '' : 'z'}">${v || '—'}</span></td>`;
+        }
+        accTotal += rowTotal;
+        h += `<td class="sub-t">${rowTotal || '—'}</td>
+              </tr>`;
+      }
+
+      h += `</tbody>
+        <tfoot>
+          <tr>
+            <td class="col-d">TOTAL</td>`;
+      for (const c of FIXED) h += `<td>${accCat[c.id] || 0}</td>`;
+      h += `<td>${accTotal}</td>
+          </tr>
+        </tfoot>
+      </table>`;
+      return h;
+    }
+
+    wrap.innerHTML = `
+      <div class="ov-split">
+        <div>
+          <div class="ov-type-label appels">📞 Appels téléphoniques</div>
+          ${buildTypeTable('appels', 'grp-ap')}
+        </div>
+        <div>
+          <div class="ov-type-label emails">✉️ Courriels / E-mails</div>
+          ${buildTypeTable('emails', 'grp-em')}
+        </div>
+      </div>`;
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   PROGRESS CHART
+══════════════════════════════════════════════════ */
+let _chart = null;
+
+function renderChart() {
+  const workers = S.tab === 'all' ? WORKERS : [S.tab];
+  const dates   = getFilteredDates(workers).slice().reverse(); // chronological
+
+  const chartSection = document.getElementById('chartSection');
+  if (dates.length === 0) { chartSection.style.display = 'none'; return; }
+  chartSection.style.display = 'block';
+
+  const labels   = dates.map(d => fmtShort(d));
+  const datasets = [];
+
+  const COLORS = {
+    'Marc S.': { line: '#2471a3', fill: 'rgba(36,113,163,0.08)' },
+    'Marc P.': { line: '#9b59b6', fill: 'rgba(155,89,182,0.08)' },
+  };
 
   if (S.tab === 'all') {
-    h += '<tr><th class="col-d" rowspan="3">Date</th>';
-    for (const wn of workers) {
-      const colSpan = FIXED.length + cA.length + 1 + FIXED.length + cE.length + 1 + 1;
-      const bg = wn === 'Marc S.' ? 'background:#dbeeff;color:#1a3a6b' : 'background:#f0e6ff;color:#6c3483';
-      h += `<th colspan="${colSpan}" style="${bg}">${wn}</th>`;
+    // Grand total line
+    const combined = dates.map(d =>
+      WORKERS.reduce((s, wn) => s + dayTotal(getDay(wn, d), 'appels') + dayTotal(getDay(wn, d), 'emails'), 0)
+    );
+    datasets.push({
+      label: 'Total combiné',
+      data: combined,
+      borderColor: '#1e8449',
+      backgroundColor: 'rgba(30,132,73,0.07)',
+      borderWidth: 2.5,
+      fill: true,
+      tension: 0.35,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+    });
+    // Individual lines
+    for (const wn of WORKERS) {
+      const data = dates.map(d =>
+        dayTotal(getDay(wn, d), 'appels') + dayTotal(getDay(wn, d), 'emails')
+      );
+      datasets.push({
+        label: wn,
+        data,
+        borderColor: COLORS[wn].line,
+        backgroundColor: 'transparent',
+        borderWidth: 1.8,
+        fill: false,
+        tension: 0.35,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        borderDash: [5, 3],
+      });
     }
-    h += '<th class="grp-tot" rowspan="3">Grand<br>Total</th></tr><tr>';
-    for (const wn of workers) {
-      h += `<th class="grp-ap" colspan="${FIXED.length+cA.length+1}">📞 Appels</th>`;
-      h += `<th class="grp-em" colspan="${FIXED.length+cE.length+1}">✉️ E-mails</th>`;
-      h += `<th class="grp-tot">Total</th>`;
-    }
-    h += '</tr><tr>';
-    for (const wn of workers) {
-      for (const c of FIXED) h += `<th class="grp-ap" style="font-size:10.5px;font-weight:500">${c.label}</th>`;
-      for (const c of cA)    h += `<th class="grp-ap" style="font-size:10.5px;font-style:italic">${c}</th>`;
-      h += '<th class="grp-ap">Total</th>';
-      for (const c of FIXED) h += `<th class="grp-em" style="font-size:10.5px;font-weight:500">${c.label}</th>`;
-      for (const c of cE)    h += `<th class="grp-em" style="font-size:10.5px;font-style:italic">${c}</th>`;
-      h += '<th class="grp-em">Total</th>';
-    }
-    h += '</tr>';
   } else {
-    h += '<tr><th class="col-d" rowspan="2">Date</th>';
-    h += `<th class="grp-ap" colspan="${FIXED.length+cA.length+1}">📞 Appels téléphoniques</th>`;
-    h += `<th class="grp-em" colspan="${FIXED.length+cE.length+1}">✉️ E-mails</th>`;
-    h += '<th class="grp-tot" rowspan="2">Total</th></tr><tr>';
-    for (const c of FIXED) h += `<th class="grp-ap" style="font-size:10.5px;font-weight:500">${c.label}</th>`;
-    for (const c of cA)    h += `<th class="grp-ap" style="font-size:10.5px;font-style:italic">${c}</th>`;
-    h += '<th class="grp-ap">Total</th>';
-    for (const c of FIXED) h += `<th class="grp-em" style="font-size:10.5px;font-weight:500">${c.label}</th>`;
-    for (const c of cE)    h += `<th class="grp-em" style="font-size:10.5px;font-style:italic">${c}</th>`;
-    h += '<th class="grp-em">Total</th></tr>';
+    const wn      = S.tab;
+    const appels  = dates.map(d => dayTotal(getDay(wn, d), 'appels'));
+    const emails  = dates.map(d => dayTotal(getDay(wn, d), 'emails'));
+    const totaux  = dates.map((_, i) => appels[i] + emails[i]);
+
+    datasets.push({
+      label: 'Total',
+      data: totaux,
+      borderColor: COLORS[wn].line,
+      backgroundColor: COLORS[wn].fill,
+      borderWidth: 2.5,
+      fill: true,
+      tension: 0.35,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+    });
+    datasets.push({
+      label: '📞 Appels',
+      data: appels,
+      borderColor: '#2471a3',
+      backgroundColor: 'transparent',
+      borderWidth: 1.6,
+      fill: false,
+      tension: 0.35,
+      pointRadius: 3,
+      borderDash: [5, 3],
+    });
+    datasets.push({
+      label: '✉️ E-mails',
+      data: emails,
+      borderColor: '#9b59b6',
+      backgroundColor: 'transparent',
+      borderWidth: 1.6,
+      fill: false,
+      tension: 0.35,
+      pointRadius: 3,
+      borderDash: [5, 3],
+    });
   }
 
-  h += '</thead><tbody>';
+  if (_chart) { _chart.destroy(); _chart = null; }
 
-  /* Accumulators for footer */
-  const accF   = {};
-  const accC   = {};
-  const accSub = {};
-  for (const wn of workers) {
-    accF[wn]   = { appels:{}, emails:{} };
-    accC[wn]   = { appels:{}, emails:{} };
-    accSub[wn] = { appels:0, emails:0, total:0 };
-  }
-  let grandAcc = 0;
-
-  for (const d of dates) {
-    const isToday = d === todayStr;
-    h += `<tr class="${isToday?'is-today':''}"><td class="col-d">${isToday?'⭐ ':''}${fmtShort(d)}</td>`;
-    let rowGrand = 0;
-
-    for (const wn of workers) {
-      const day = getDay(wn, d);
-      let rA = 0, rE = 0;
-
-      for (const c of FIXED) {
-        const v = getVal(day,'appels',c.id);
-        rA += v; accF[wn].appels[c.id] = (accF[wn].appels[c.id]||0)+v;
-        h += `<td><span class="${v?'':'z'}">${v||'—'}</span></td>`;
+  const ctx = document.getElementById('progressChart').getContext('2d');
+  _chart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: { font: { size: 12 }, padding: 16, usePointStyle: true }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.raw} action${ctx.raw !== 1 ? 's' : ''}`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { stepSize: 1, font: { size: 11 } },
+          grid: { color: '#f0f0f0' }
+        },
+        x: {
+          ticks: { font: { size: 11 }, maxRotation: 45 },
+          grid: { display: false }
+        }
       }
-      for (const c of cA) {
-        const v = (day?.appels_custom||{})[c]||0;
-        rA += v; accC[wn].appels[c] = (accC[wn].appels[c]||0)+v;
-        h += `<td><span class="${v?'':'z'}">${v||'—'}</span></td>`;
-      }
-      h += `<td class="sub-t">${rA}</td>`;
-
-      for (const c of FIXED) {
-        const v = getVal(day,'emails',c.id);
-        rE += v; accF[wn].emails[c.id] = (accF[wn].emails[c.id]||0)+v;
-        h += `<td><span class="${v?'':'z'}">${v||'—'}</span></td>`;
-      }
-      for (const c of cE) {
-        const v = (day?.emails_custom||{})[c]||0;
-        rE += v; accC[wn].emails[c] = (accC[wn].emails[c]||0)+v;
-        h += `<td><span class="${v?'':'z'}">${v||'—'}</span></td>`;
-      }
-      h += `<td class="sub-t">${rE}</td>`;
-
-      const rt = rA+rE;
-      h += `<td class="sub-t" style="background:#e8faf0">${rt}</td>`;
-      accSub[wn].appels += rA;
-      accSub[wn].emails += rE;
-      accSub[wn].total  += rt;
-      rowGrand += rt;
     }
-    grandAcc += rowGrand;
-    if (S.tab === 'all') h += `<td class="sub-t" style="background:#e8faf0">${rowGrand}</td>`;
-    h += '</tr>';
-  }
-
-  /* Footer */
-  h += '</tbody><tfoot><tr><td class="col-d">TOTAL</td>';
-  for (const wn of workers) {
-    for (const c of FIXED) h += `<td>${accF[wn].appels[c.id]||0}</td>`;
-    for (const c of cA)    h += `<td>${accC[wn].appels[c]||0}</td>`;
-    h += `<td>${accSub[wn].appels}</td>`;
-    for (const c of FIXED) h += `<td>${accF[wn].emails[c.id]||0}</td>`;
-    for (const c of cE)    h += `<td>${accC[wn].emails[c]||0}</td>`;
-    h += `<td>${accSub[wn].emails}</td>`;
-    h += `<td>${accSub[wn].total}</td>`;
-  }
-  if (S.tab === 'all') h += `<td>${grandAcc}</td>`;
-  h += '</tr></tfoot></table>';
-
-  wrap.innerHTML = h;
+  });
 }
 
 /* ══════════════════════════════════════════════════
@@ -902,7 +936,7 @@ function toast(msg) {
 }
 
 /* ══════════════════════════════════════════════════
-   WIRE UP STATIC BUTTONS
+   WIRE UP BUTTONS
 ══════════════════════════════════════════════════ */
 document.getElementById('prevDay').addEventListener('click', () => {
   const [y,m,d] = S.date.split('-').map(Number);
@@ -921,32 +955,18 @@ document.getElementById('datePick').addEventListener('change', (e) => {
   if (e.target.value) { S.date = e.target.value; renderAll(); }
 });
 
-// Overview tabs
 document.getElementById('tab-all').addEventListener('click',   () => setTab('all'));
 document.getElementById('tab-marcs').addEventListener('click', () => setTab('Marc S.'));
 document.getElementById('tab-marcp').addEventListener('click', () => setTab('Marc P.'));
 
-// Period buttons
 document.getElementById('p7').addEventListener('click',   () => setPeriod(7));
 document.getElementById('p30').addEventListener('click',  () => setPeriod(30));
 document.getElementById('pAll').addEventListener('click', () => setPeriod(0));
 
-// Excel
 document.getElementById('btnExcel').addEventListener('click', exportExcel);
 
-// Modal
-document.getElementById('modalOk').addEventListener('click', confirmCat);
-document.getElementById('modalCancel').addEventListener('click', closeModal);
-document.getElementById('inputCat').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') confirmCat();
-  if (e.key === 'Escape') closeModal();
-});
-document.getElementById('modalCat').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('modalCat')) closeModal();
-});
-
 /* ── Init ── */
-renderAll();  // render empty shell while socket loads
+renderAll();
 </script>
 </body>
 </html>
