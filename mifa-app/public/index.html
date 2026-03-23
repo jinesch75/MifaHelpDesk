@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Suivi des Activités — MIFA</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -59,8 +58,8 @@
     }
     .arrow:hover { background: #1a3a6b; }
     .date-label {
-      font-size: 17px; font-weight: 700; color: #1a3a6b;
-      min-width: 260px; text-align: center; text-transform: capitalize;
+      font-size: 16px; font-weight: 700; color: #1a3a6b;
+      min-width: 200px; text-align: center; text-transform: capitalize;
     }
     .date-input {
       padding: 6px 10px; border: 2px solid #2471a3; border-radius: 8px;
@@ -74,7 +73,7 @@
     .btn-today:hover { background: #196f3d; }
 
     /* ── MAIN ── */
-    .container { max-width: 1400px; margin: 0 auto; padding: 20px 18px; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 20px 18px 48px; }
 
     /* ── WORKER SECTION ── */
     .worker-section {
@@ -118,7 +117,9 @@
     .act-card-head.appels { background: rgba(36, 113, 163, 0.10); color: #1a3a6b; }
     .act-card-head.emails { background: rgba(155, 89, 182, 0.10); color: #6d3b8f; }
     .act-card-subtotal {
-      margin-left: auto; font-size: 18px; font-weight: 800;
+      margin-left: auto; font-size: 16px; font-weight: 800;
+      background: rgba(255,255,255,0.55); padding: 2px 9px;
+      border-radius: 12px;
     }
 
     /* ── COUNTER ROW ── */
@@ -163,20 +164,20 @@
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 12px; margin-bottom: 16px;
     }
-    .ov-title { font-size: 15px; font-weight: 700; color: #1a3a6b; }
+    .ov-title { font-size: 15px; font-weight: 800; color: #1a3a6b; letter-spacing: 0.2px; }
     .ov-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
     .tab-btn {
-      padding: 5px 13px; border: 2px solid #2471a3; border-radius: 7px;
+      padding: 7px 16px; border: 2px solid #2471a3; border-radius: 20px;
       background: none; color: #2471a3; font-size: 12.5px; font-weight: 700;
       cursor: pointer; transition: all 0.18s;
     }
     .tab-btn.active, .tab-btn:hover { background: #2471a3; color: white; }
     .period-btn {
-      padding: 5px 13px; border: 2px solid #888; border-radius: 7px;
+      padding: 7px 14px; border: 2px solid #c5cdd6; border-radius: 20px;
       background: none; color: #666; font-size: 12.5px; font-weight: 700;
       cursor: pointer; transition: all 0.18s;
     }
-    .period-btn.active, .period-btn:hover { background: #555; color: white; border-color: #555; }
+    .period-btn.active, .period-btn:hover { background: #4a5568; color: white; border-color: #4a5568; }
     .btn-excel {
       padding: 6px 15px; border: none; border-radius: 7px;
       background: #1e8449; color: white; font-size: 12.5px;
@@ -187,12 +188,13 @@
     /* Overview sub-section labels */
     .ov-type-label {
       font-size: 13px; font-weight: 700;
-      padding: 6px 0 8px;
+      padding: 7px 10px 8px;
       border-bottom: 2px solid;
+      border-radius: 6px 6px 0 0;
       margin-bottom: 10px;
     }
-    .ov-type-label.appels { color: #1a3a6b; border-color: #dbeeff; }
-    .ov-type-label.emails { color: #6d3b8f; border-color: #f0e6ff; }
+    .ov-type-label.appels { color: #1a3a6b; border-color: #2471a3; background: #f0f6ff; }
+    .ov-type-label.emails { color: #6d3b8f; border-color: #9b59b6; background: #faf0ff; }
 
     /* Two-column layout for individual worker overview */
     .ov-split {
@@ -222,24 +224,16 @@
     table.ov tr.is-today td { background: #fffde7; }
     table.ov tr.is-today td.col-d { color: #d68910; }
     table.ov td.sub-t { font-weight: 700; color: #1a5e20; }
-    .z { color: #ddd; }
+    .z { color: #bbb; }
     table.ov tfoot td {
-      background: #eef2f7; font-weight: 800; color: #1a3a6b;
-      border-top: 2px solid #ccc; padding: 9px;
+      background: #e4ecf5; font-weight: 800; color: #1a3a6b;
+      border-top: 2px solid #b0c4d8; padding: 9px;
     }
     table.ov tfoot td.col-d { text-align: left; }
     .empty { text-align: center; padding: 32px; color: #bbb; font-size: 13px; }
 
-    /* ── CHART ── */
-    .chart-section {
-      background: white; border-radius: 14px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.09);
-      padding: 18px 22px; margin-bottom: 20px;
-    }
-    .chart-title { font-size: 15px; font-weight: 700; color: #1a3a6b; margin-bottom: 16px; }
-    .chart-wrap { position: relative; height: 280px; }
 
-    /* ── TOAST ── */
+/* ── TOAST ── */
     .toast {
       position: fixed; bottom: 20px; right: 20px;
       background: #27ae60; color: white; padding: 10px 16px;
@@ -315,13 +309,6 @@
     <div id="ovWrap"></div>
   </div>
 
-  <!-- Progress Chart -->
-  <div class="chart-section" id="chartSection" style="display:none">
-    <div class="chart-title">📈 Progression par jour</div>
-    <div class="chart-wrap">
-      <canvas id="progressChart"></canvas>
-    </div>
-  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -450,7 +437,6 @@ function renderAll() {
   document.getElementById('datePick').value = S.date;
   renderWorkers();
   renderOverview();
-  renderChart();
 }
 
 function renderWorkers() {
@@ -590,14 +576,12 @@ function setTab(t) {
   const ids = { all: 'tab-all', 'Marc S.': 'tab-marcs', 'Marc P.': 'tab-marcp' };
   document.getElementById(ids[t])?.classList.add('active');
   renderOverview();
-  renderChart();
 }
 function setPeriod(n) {
   S.period = n;
   document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(n===7?'p7':n===30?'p30':'pAll')?.classList.add('active');
   renderOverview();
-  renderChart();
 }
 
 function renderOverview() {
@@ -605,7 +589,7 @@ function renderOverview() {
   const todayStr = today();
 
   if (S.tab === 'all') {
-    /* ── GLOBAL VIEW: compact summary table ── */
+    /* ── GLOBAL VIEW: same two-table layout as individual, values summed ── */
     const dates = getFilteredDates(WORKERS);
 
     if (dates.length === 0) {
@@ -613,66 +597,59 @@ function renderOverview() {
       return;
     }
 
-    const acc = {};
-    for (const wn of WORKERS) acc[wn] = { appels: 0, emails: 0, total: 0 };
-    let grandTotal = 0;
+    function buildCombinedTypeTable(type, groupCls) {
+      const accCat = {}; for (const c of FIXED) accCat[c.id] = 0;
+      let accTotal = 0;
 
-    let h = `<table class="ov">
-      <thead>
-        <tr>
-          <th class="col-d" rowspan="2">Date</th>`;
-    for (const wn of WORKERS) {
-      const cls = wn === 'Marc S.' ? 'grp-ms' : 'grp-mp';
-      h += `<th class="${cls}" colspan="3">${wn}</th>`;
-    }
-    h += `<th class="grp-tot" rowspan="2">Grand Total</th>
-        </tr>
-        <tr>`;
-    for (const wn of WORKERS) {
-      h += `<th class="grp-ap">📞 Appels</th>
-            <th class="grp-em">✉️ E-mails</th>
-            <th class="grp-tot">Total</th>`;
-    }
-    h += `</tr>
-      </thead>
-      <tbody>`;
+      let h = `<table class="ov">
+        <thead>
+          <tr>
+            <th class="col-d">Date</th>`;
+      for (const c of FIXED) h += `<th class="${groupCls}" style="font-size:10.5px;font-weight:600">${c.label}</th>`;
+      h += `<th class="${groupCls}">Total</th>
+          </tr>
+        </thead>
+        <tbody>`;
 
-    for (const d of dates) {
-      const isToday = d === todayStr;
-      h += `<tr class="${isToday ? 'is-today' : ''}">
-        <td class="col-d">${isToday ? '⭐ ' : ''}${fmtShort(d)}</td>`;
-      let rowGrand = 0;
-      for (const wn of WORKERS) {
-        const day = getDay(wn, d);
-        const tA  = dayTotal(day, 'appels');
-        const tE  = dayTotal(day, 'emails');
-        const t   = tA + tE;
-        acc[wn].appels += tA; acc[wn].emails += tE; acc[wn].total += t;
-        rowGrand += t;
-        h += `<td><span class="${tA ? '' : 'z'}">${tA || '—'}</span></td>
-              <td><span class="${tE ? '' : 'z'}">${tE || '—'}</span></td>
-              <td class="sub-t" style="background:#e8faf0">${t || '—'}</td>`;
+      for (const d of dates) {
+        const isToday = d === todayStr;
+        let rowTotal = 0;
+        h += `<tr class="${isToday ? 'is-today' : ''}">
+          <td class="col-d">${isToday ? '⭐ ' : ''}${fmtShort(d)}</td>`;
+        for (const c of FIXED) {
+          let v = 0;
+          for (const wn of WORKERS) v += getVal(getDay(wn, d), type, c.id);
+          rowTotal += v; accCat[c.id] += v;
+          h += `<td><span class="${v ? '' : 'z'}">${v || '—'}</span></td>`;
+        }
+        accTotal += rowTotal;
+        h += `<td class="sub-t">${rowTotal || '—'}</td>
+              </tr>`;
       }
-      grandTotal += rowGrand;
-      h += `<td class="sub-t" style="background:#e8faf0;font-weight:800">${rowGrand || '—'}</td>
-            </tr>`;
+
+      h += `</tbody>
+        <tfoot>
+          <tr>
+            <td class="col-d">TOTAL</td>`;
+      for (const c of FIXED) h += `<td>${accCat[c.id] || 0}</td>`;
+      h += `<td>${accTotal}</td>
+          </tr>
+        </tfoot>
+      </table>`;
+      return h;
     }
 
-    h += `</tbody>
-      <tfoot>
-        <tr>
-          <td class="col-d">TOTAL</td>`;
-    for (const wn of WORKERS) {
-      h += `<td>${acc[wn].appels}</td>
-            <td>${acc[wn].emails}</td>
-            <td>${acc[wn].total}</td>`;
-    }
-    h += `<td>${grandTotal}</td>
-        </tr>
-      </tfoot>
-    </table>`;
-
-    wrap.innerHTML = h;
+    wrap.innerHTML = `
+      <div class="ov-split">
+        <div>
+          <div class="ov-type-label appels">📞 Appels téléphoniques</div>
+          ${buildCombinedTypeTable('appels', 'grp-ap')}
+        </div>
+        <div>
+          <div class="ov-type-label emails">✉️ Courriels / E-mails</div>
+          ${buildCombinedTypeTable('emails', 'grp-em')}
+        </div>
+      </div>`;
 
   } else {
     /* ── INDIVIDUAL WORKER VIEW: two side-by-side tables ── */
@@ -741,137 +718,6 @@ function renderOverview() {
   }
 }
 
-/* ══════════════════════════════════════════════════
-   PROGRESS CHART
-══════════════════════════════════════════════════ */
-let _chart = null;
-
-function renderChart() {
-  const workers = S.tab === 'all' ? WORKERS : [S.tab];
-  const dates   = getFilteredDates(workers).slice().reverse(); // chronological
-
-  const chartSection = document.getElementById('chartSection');
-  if (dates.length === 0) { chartSection.style.display = 'none'; return; }
-  chartSection.style.display = 'block';
-
-  const labels   = dates.map(d => fmtShort(d));
-  const datasets = [];
-
-  const COLORS = {
-    'Marc S.': { line: '#2471a3', fill: 'rgba(36,113,163,0.08)' },
-    'Marc P.': { line: '#9b59b6', fill: 'rgba(155,89,182,0.08)' },
-  };
-
-  if (S.tab === 'all') {
-    // Grand total line
-    const combined = dates.map(d =>
-      WORKERS.reduce((s, wn) => s + dayTotal(getDay(wn, d), 'appels') + dayTotal(getDay(wn, d), 'emails'), 0)
-    );
-    datasets.push({
-      label: 'Total combiné',
-      data: combined,
-      borderColor: '#1e8449',
-      backgroundColor: 'rgba(30,132,73,0.07)',
-      borderWidth: 2.5,
-      fill: true,
-      tension: 0.35,
-      pointRadius: 4,
-      pointHoverRadius: 6,
-    });
-    // Individual lines
-    for (const wn of WORKERS) {
-      const data = dates.map(d =>
-        dayTotal(getDay(wn, d), 'appels') + dayTotal(getDay(wn, d), 'emails')
-      );
-      datasets.push({
-        label: wn,
-        data,
-        borderColor: COLORS[wn].line,
-        backgroundColor: 'transparent',
-        borderWidth: 1.8,
-        fill: false,
-        tension: 0.35,
-        pointRadius: 3,
-        pointHoverRadius: 5,
-        borderDash: [5, 3],
-      });
-    }
-  } else {
-    const wn      = S.tab;
-    const appels  = dates.map(d => dayTotal(getDay(wn, d), 'appels'));
-    const emails  = dates.map(d => dayTotal(getDay(wn, d), 'emails'));
-    const totaux  = dates.map((_, i) => appels[i] + emails[i]);
-
-    datasets.push({
-      label: 'Total',
-      data: totaux,
-      borderColor: COLORS[wn].line,
-      backgroundColor: COLORS[wn].fill,
-      borderWidth: 2.5,
-      fill: true,
-      tension: 0.35,
-      pointRadius: 4,
-      pointHoverRadius: 6,
-    });
-    datasets.push({
-      label: '📞 Appels',
-      data: appels,
-      borderColor: '#2471a3',
-      backgroundColor: 'transparent',
-      borderWidth: 1.6,
-      fill: false,
-      tension: 0.35,
-      pointRadius: 3,
-      borderDash: [5, 3],
-    });
-    datasets.push({
-      label: '✉️ E-mails',
-      data: emails,
-      borderColor: '#9b59b6',
-      backgroundColor: 'transparent',
-      borderWidth: 1.6,
-      fill: false,
-      tension: 0.35,
-      pointRadius: 3,
-      borderDash: [5, 3],
-    });
-  }
-
-  if (_chart) { _chart.destroy(); _chart = null; }
-
-  const ctx = document.getElementById('progressChart').getContext('2d');
-  _chart = new Chart(ctx, {
-    type: 'line',
-    data: { labels, datasets },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: { font: { size: 12 }, padding: 16, usePointStyle: true }
-        },
-        tooltip: {
-          callbacks: {
-            label: ctx => `${ctx.dataset.label}: ${ctx.raw} action${ctx.raw !== 1 ? 's' : ''}`
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { stepSize: 1, font: { size: 11 } },
-          grid: { color: '#f0f0f0' }
-        },
-        x: {
-          ticks: { font: { size: 11 }, maxRotation: 45 },
-          grid: { display: false }
-        }
-      }
-    }
-  });
-}
 
 /* ══════════════════════════════════════════════════
    EXCEL EXPORT
