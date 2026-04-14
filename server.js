@@ -62,6 +62,19 @@ async function startServer() {
       } catch (e) { console.error('add_entry error:', e); }
     });
 
+    socket.on('update_entry', async ({ date, type, entry }) => {
+      try {
+        const state = await dbGet();
+        const day = ensureDay(state, date);
+        if (day[type]) {
+          const idx = day[type].findIndex(e => e.id === entry.id);
+          if (idx !== -1) day[type][idx] = entry;
+        }
+        await dbSet(state);
+        io.emit('state', state);
+      } catch (e) { console.error('update_entry error:', e); }
+    });
+
     socket.on('delete_entry', async ({ date, type, entryId }) => {
       try {
         const state = await dbGet();

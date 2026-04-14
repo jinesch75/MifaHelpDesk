@@ -51,6 +51,9 @@
     .topic-tag.emails { background: #f0e6ff; color: #6c3483; }
     .btn-del { background: none; border: none; color: #ddd; cursor: pointer; font-size: 16px; padding: 3px 7px; border-radius: 5px; transition: color 0.2s; }
     .btn-del:hover { color: #c0392b; }
+    .btn-edit { background: none; border: none; color: #ccc; cursor: pointer; font-size: 14px; padding: 3px 7px; border-radius: 5px; transition: color 0.2s; }
+    .btn-edit:hover { color: #2471a3; }
+    .td-actions { white-space: nowrap; }
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 8000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
     .modal { background: white; border-radius: 16px; padding: 28px 28px 22px; width: 100%; max-width: 440px; box-shadow: 0 12px 40px rgba(0,0,0,0.22); transform: translateY(20px); transition: transform 0.2s; }
@@ -194,40 +197,65 @@ socket.on('state', (serverState)=>{ S.days=serverState.days||{}; document.getEle
 function setConnStatus(status,label) { document.getElementById('connDot').className='conn-dot'+(status==='connected'?' connected':status==='saving'?' saving':''); document.getElementById('connLabel').textContent=label; }
 function flashSaving() { setConnStatus('saving','Sauvegarde…'); clearTimeout(saveTmr); saveTmr=setTimeout(()=>setConnStatus('connected','Connecté · Synchronisation temps réel'),700); }
 let modalType=null;
-function openModal(type) {
+let modalEditId=null; // null = new entry, string = editing existing entry
+
+function openModal(type, existingEntry) {
   modalType=type;
+  modalEditId=existingEntry ? existingEntry.id : null;
   const isCalls=type==='calls';
   const title=document.getElementById('modalTitle');
   title.className='modal-title '+type;
-  title.textContent=isCalls?'📞 Nouvel appel téléphonique':'✉️ Nouveau courriel';
+  title.textContent=modalEditId
+    ? (isCalls?'📞 Modifier l\'appel':'✉️ Modifier le courriel')
+    : (isCalls?'📞 Nouvel appel téléphonique':'✉️ Nouveau courriel');
   document.getElementById('modalConfirm').className='btn-confirm '+type;
+  document.getElementById('modalConfirm').textContent=modalEditId?'Mettre à jour':'Enregistrer';
   const grid=document.getElementById('topicsGrid');
   grid.innerHTML='';
+  const preSelected=existingEntry ? existingEntry.topics : [];
   for(const t of TOPICS) {
     const item=document.createElement('label');
-    item.className='topic-check '+type;
+    const isSelected=preSelected.includes(t.id);
+    item.className='topic-check '+type+(isSelected?' selected':'');
     item.dataset.id=t.id;
-    item.innerHTML='<input type="checkbox" value="'+t.id+'" /><div class="check-box"></div><span class="check-label">'+t.label+'</span>';
+    item.innerHTML='<input type="checkbox" value="'+t.id+'"'+(isSelected?' checked':'')+' /><div class="check-box">'+(isSelected?'✓':'')+'</div><span class="check-label">'+t.label+'</span>';
     item.addEventListener('click',(e)=>{ e.preventDefault(); item.classList.toggle('selected'); const cb=item.querySelector('input'); cb.checked=!cb.checked; item.querySelector('.check-box').textContent=cb.checked?'✓':''; updateConfirmBtn(); });
     grid.appendChild(item);
   }
   updateConfirmBtn();
   document.getElementById('modalOverlay').classList.add('open');
 }
-function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); modalType=null; }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); modalType=null; modalEditId=null; }
 function updateConfirmBtn() { document.getElementById('modalConfirm').disabled=!document.querySelector('#topicsGrid input:checked'); }
 document.getElementById('modalCancel').addEventListener('click',closeModal);
 document.getElementById('modalOverlay').addEventListener('click',(e)=>{ if(e.target===document.getElementById('modalOverlay')) closeModal(); });
 document.getElementById('modalConfirm').addEventListener('click',()=>{
   const checked=[...document.querySelectorAll('#topicsGrid input:checked')].map(cb=>cb.value);
   if(!checked.length) return;
-  const entry={id:uid(),time:nowTime(),topics:checked};
-  getDayData(S.date)[modalType].push(entry);
-  flashSaving();
-  socket.emit('add_entry',{date:S.date,type:modalType,entry});
+  const day=getDayData(S.date);
+  if(modalEditId) {
+    // Edit existing entry — update topics in place, keep original time
+    const entry=day[modalType].find(e=>e.id===modalEditId);
+    if(entry) {
+      entry.topics=checked;
+      socket.emit('update_entry',{date:S.date,type:modalType,entry});
+      flashSaving();
+    }
+  } else {
+    // New entry
+    const entry={id:uid(),time:nowTime(),topics:checked};
+    day[modalType].push(entry);
+    socket.emit('add_entry',{date:S.date,type:modalType,entry});
+    flashSaving();
+  }
   closeModal(); renderAll();
-  toast(modalType==='calls'?'📞 Appel enregistré !':'✉️ Courriel enregistré !');
+  toast(modalType==='calls'?'📞 Appel mis à jour !':'✉️ Courriel mis à jour !');
 });
+function editEntry(type,entryId) {
+  const day=getDayData(S.date);
+  const entry=day[type].find(e=>e.id===entryId);
+  if(entry) openModal(type, entry);
+}
 function deleteEntry(type,entryId) {
   const day=getDayData(S.date);
   day[type]=day[type].filter(e=>e.id!==entryId);
@@ -249,7 +277,7 @@ function renderLog(type) {
   let html='<table class="log-table"><thead><tr><th class="th-time">Heure</th><th>Sujets</th><th class="th-del"></th></tr></thead><tbody>';
   for(const entry of entries) {
     const tags=entry.topics.map(tid=>{ const t=TOPICS.find(x=>x.id===tid); return '<span class="topic-tag '+type+'">'+(t?t.label:tid)+'</span>'; }).join('');
-    html+='<tr><td class="td-time">'+entry.time+'</td><td>'+tags+'</td><td><button class="btn-del" onclick="deleteEntry(\''+type+'\',\''+entry.id+'\')">✕</button></td></tr>';
+    html+='<tr><td class="td-time">'+entry.time+'</td><td>'+tags+'</td><td class="td-actions"><button class="btn-edit" title="Modifier" onclick="editEntry(\''+type+'\',\''+entry.id+'\')">✏️</button><button class="btn-del" title="Supprimer" onclick="deleteEntry(\''+type+'\',\''+entry.id+'\')">✕</button></td></tr>';
   }
   wrap.innerHTML=html+'</tbody></table>';
 }
