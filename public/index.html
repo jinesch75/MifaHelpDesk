@@ -62,7 +62,7 @@
     .modal-title.calls { color: #1a3a6b; }
     .modal-title.emails { color: #6d3b8f; }
     .modal-sub { font-size: 12.5px; color: #888; margin-bottom: 20px; }
-    .topics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
+    .topics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 22px; max-height: 60vh; overflow-y: auto; padding-right: 4px; }
     .topic-check { display: flex; align-items: center; gap: 9px; padding: 10px 13px; border-radius: 9px; border: 2px solid #eee; cursor: pointer; transition: all 0.15s; user-select: none; }
     .topic-check:hover { border-color: #b0c4d8; background: #f5f9ff; }
     .topic-check.calls.selected { border-color: #2471a3; background: #eef5ff; }
@@ -171,13 +171,19 @@
 <div class="toast" id="toast"></div>
 <script>
 const TOPICS = [
-  { id: 'cie', label: 'CIE' },
-  { id: 'nationalite', label: 'Nationalité' },
-  { id: 'langue', label: 'Langue' },
-  { id: 'codes', label: 'Codes langue' },
-  { id: 'participation', label: 'Participation' },
-  { id: 'cours_civiques', label: 'Cours civiques' },
-  { id: 'orientation', label: 'Orientation' },
+  { id: 'cai',                  label: 'CAI' },
+  { id: 'biergerpakt',          label: 'Biergerpakt' },
+  { id: 'nationalite',          label: 'Nationalité' },
+  { id: 'code_altissia',        label: 'Code Altissia' },
+  { id: 'bon_linguistique',     label: 'Bon linguistique CAI' },
+  { id: 'inscription_civiques', label: 'Inscription Cours civiques' },
+  { id: 'orientation',          label: 'Journée d\'orientation' },
+  { id: 'infosession',          label: 'Infosession' },
+  { id: 'cert_final',           label: 'Certificat final' },
+  { id: 'cert_linguistique',    label: 'Certificat linguistique' },
+  { id: 'cert_civique',         label: 'Certificat Cours civique' },
+  { id: 'cert_orientation',     label: 'Certificat Journée d\'orientation' },
+  { id: 'switch_cai_bpakt',     label: 'Switch CAI→Biergerpakt' },
 ];
 let S = { date: today(), period: 7, days: {} };
 function localStr(d) { return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
