@@ -21,23 +21,16 @@
       background: linear-gradient(135deg, #1a3a6b, #2471a3);
       color: white;
       padding: 14px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
       box-shadow: 0 3px 10px rgba(0,0,0,0.25);
-      flex-wrap: wrap;
-      gap: 12px;
+      flex-wrap: wrap; gap: 12px;
     }
     .header-title { font-size: 20px; font-weight: 700; }
     .header-sub   { font-size: 12px; opacity: 0.75; margin-top: 2px; }
-    .conn-status  {
-      font-size: 12px; opacity: 0.9;
-      display: flex; align-items: center; gap: 6px;
-    }
+    .conn-status  { font-size: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px; }
     .conn-dot {
       width: 9px; height: 9px; border-radius: 50%;
-      background: #e74c3c; flex-shrink: 0;
-      transition: background 0.4s;
+      background: #e74c3c; flex-shrink: 0; transition: background 0.4s;
     }
     .conn-dot.connected { background: #2ecc71; }
     .conn-dot.saving    { background: #f39c12; }
@@ -46,9 +39,7 @@
     .date-bar {
       background: white;
       display: flex; align-items: center; justify-content: center; gap: 12px;
-      padding: 12px 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.07);
-      flex-wrap: wrap;
+      padding: 12px 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.07); flex-wrap: wrap;
     }
     .arrow {
       background: #2471a3; color: white; border: none;
@@ -59,127 +50,149 @@
     .arrow:hover { background: #1a3a6b; }
     .date-label {
       font-size: 16px; font-weight: 700; color: #1a3a6b;
-      min-width: 200px; text-align: center; text-transform: capitalize;
+      min-width: 220px; text-align: center; text-transform: capitalize;
     }
-    .date-input {
-      padding: 6px 10px; border: 2px solid #2471a3; border-radius: 8px;
-      font-size: 13px; color: #333; outline: none;
-    }
+    .date-input { padding: 6px 10px; border: 2px solid #2471a3; border-radius: 8px; font-size: 13px; }
     .btn-today {
       background: #1e8449; color: white; border: none;
-      padding: 7px 15px; border-radius: 8px; font-size: 13px;
-      font-weight: 700; cursor: pointer; transition: background 0.2s;
+      padding: 7px 15px; border-radius: 8px; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: background 0.2s;
     }
     .btn-today:hover { background: #196f3d; }
 
     /* ── MAIN ── */
-    .container { max-width: 1000px; margin: 0 auto; padding: 20px 18px 48px; }
+    .container { max-width: 900px; margin: 0 auto; padding: 24px 18px 60px; }
 
-    /* ── UNIFIED INPUT TABLE ── */
-    .input-section {
+    /* ── ACTIVITY SECTION ── */
+    .act-section {
       background: white; border-radius: 14px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.09);
-      overflow: hidden;
-      margin-bottom: 24px;
+      overflow: hidden; margin-bottom: 24px;
     }
-    .input-section-title {
-      background: linear-gradient(135deg, #1a3a6b, #2471a3);
-      color: white; padding: 13px 22px;
-      font-size: 15px; font-weight: 800; letter-spacing: 0.3px;
-      display: flex; align-items: center; gap: 10px;
+    .act-section-head {
+      padding: 14px 22px;
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      color: white;
     }
+    .act-section-head.calls  { background: linear-gradient(135deg, #1a3a6b, #2471a3); }
+    .act-section-head.emails { background: linear-gradient(135deg, #6d3b8f, #9b59b6); }
+    .act-section-title { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 9px; }
+    .act-section-count {
+      font-size: 13px; background: rgba(255,255,255,0.2);
+      padding: 4px 13px; border-radius: 20px; font-weight: 700;
+    }
+    .btn-new {
+      border: none; border-radius: 9px; padding: 9px 18px;
+      font-size: 13px; font-weight: 800; cursor: pointer;
+      display: flex; align-items: center; gap: 7px;
+      transition: all 0.18s; white-space: nowrap;
+    }
+    .btn-new.calls  { background: rgba(255,255,255,0.18); color: white; }
+    .btn-new.calls:hover  { background: white; color: #1a3a6b; }
+    .btn-new.emails { background: rgba(255,255,255,0.18); color: white; }
+    .btn-new.emails:hover { background: white; color: #6d3b8f; }
 
-    /* The main input grid */
-    .act-grid {
-      width: 100%;
-      border-collapse: collapse;
+    /* ── LOG TABLE ── */
+    .log-wrap { padding: 0 0 6px; }
+    .log-empty {
+      text-align: center; padding: 28px 20px;
+      color: #bbb; font-size: 13px; font-style: italic;
     }
-    .act-grid th {
-      padding: 10px 14px;
-      font-size: 12.5px; font-weight: 700;
-      border-bottom: 2px solid #dde4ed;
+    .log-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .log-table thead th {
+      padding: 9px 14px; text-align: left; font-weight: 700;
+      color: #666; border-bottom: 2px solid #eee; background: #f8f9fc;
       white-space: nowrap;
     }
-    .act-grid th.col-cat {
-      text-align: left;
-      background: #f2f6fa;
-      color: #1a3a6b;
-      min-width: 140px;
-      width: 30%;
-    }
-    .act-grid th.col-worker-ms {
-      text-align: center;
-      background: #dbeeff;
-      color: #1a3a6b;
-      width: 35%;
-    }
-    .act-grid th.col-worker-mp {
-      text-align: center;
-      background: #f0e6ff;
-      color: #6c3483;
-      width: 35%;
-    }
+    .log-table thead th.th-time   { width: 80px; }
+    .log-table thead th.th-del    { width: 40px; }
+    .log-table tbody tr { border-bottom: 1px solid #f2f2f2; transition: background 0.1s; }
+    .log-table tbody tr:last-child { border-bottom: none; }
+    .log-table tbody tr:hover { background: #f8f9fc; }
+    .log-table tbody td { padding: 9px 14px; vertical-align: middle; }
+    .log-table tbody td.td-time { color: #888; font-weight: 600; white-space: nowrap; }
 
-    /* Section row (Appels / Emails header) */
-    .act-grid tr.type-hdr td {
-      padding: 9px 14px;
-      font-size: 12px; font-weight: 800;
-      letter-spacing: 0.4px;
-      border-top: 2px solid #dde4ed;
+    .topic-tag {
+      display: inline-block;
+      padding: 3px 9px; border-radius: 12px;
+      font-size: 11px; font-weight: 700; margin: 2px 3px 2px 0;
     }
-    .act-grid tr.type-hdr.appels td { background: #eef5ff; color: #1a3a6b; }
-    .act-grid tr.type-hdr.emails td { background: #f8f0ff; color: #6d3b8f; }
+    .topic-tag.calls  { background: #dbeeff; color: #1a3a6b; }
+    .topic-tag.emails { background: #f0e6ff; color: #6c3483; }
 
-    /* Data rows */
-    .act-grid tr.data-row td {
-      padding: 7px 14px;
-      border-bottom: 1px solid #f0f0f0;
+    .btn-del {
+      background: none; border: none; color: #ddd; cursor: pointer;
+      font-size: 16px; padding: 3px 7px; border-radius: 5px; transition: color 0.2s;
     }
-    .act-grid tr.data-row:hover td { background: #f8f9fc; }
-    .act-grid tr.data-row td.cat-label {
-      font-size: 12.5px; color: #444; vertical-align: middle;
-    }
-    .act-grid tr.data-row td.ctrl-cell {
-      text-align: center; vertical-align: middle;
-    }
+    .btn-del:hover { color: #c0392b; }
 
-    /* Subtotal rows */
-    .act-grid tr.subtotal-row td {
-      padding: 7px 14px;
-      font-size: 12.5px; font-weight: 800;
-      border-top: 1px solid #dde4ed;
-      border-bottom: 2px solid #dde4ed;
-    }
-    .act-grid tr.subtotal-row td.cat-label { color: #888; }
-    .act-grid tr.subtotal-row td.sub-ms { background: #eef5ff; color: #1a3a6b; text-align: center; }
-    .act-grid tr.subtotal-row td.sub-mp { background: #f8f0ff; color: #6d3b8f; text-align: center; }
-
-    /* Grand total row */
-    .act-grid tr.grand-total td {
-      padding: 10px 14px;
-      font-size: 13px; font-weight: 800;
-      background: #e4ecf5; color: #1a3a6b;
-      border-top: 2px solid #b0c4d8;
-      text-align: center;
-    }
-    .act-grid tr.grand-total td.cat-label { text-align: left; }
-
-    /* Counter controls */
-    .c-ctrl { display: inline-flex; align-items: center; gap: 7px; }
-    .c-minus, .c-plus {
-      width: 30px; height: 30px; border: none; border-radius: 7px;
-      font-size: 20px; font-weight: 700; cursor: pointer;
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
       display: flex; align-items: center; justify-content: center;
-      line-height: 1; user-select: none; transition: all 0.15s;
+      z-index: 8000; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s;
     }
-    .c-minus { background: #fde8e8; color: #c0392b; }
-    .c-minus:hover { background: #c0392b; color: white; }
-    .c-plus  { background: #e8f8ee; color: #1e8449; }
-    .c-plus:hover  { background: #1e8449; color: white; }
-    .c-val {
-      font-size: 17px; font-weight: 800; min-width: 30px;
-      text-align: center; color: #1a3a6b;
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: white; border-radius: 16px;
+      padding: 28px 28px 22px;
+      width: 100%; max-width: 440px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.22);
+      transform: translateY(20px); transition: transform 0.2s;
     }
+    .modal-overlay.open .modal { transform: translateY(0); }
+
+    .modal-title {
+      font-size: 16px; font-weight: 800; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 9px;
+    }
+    .modal-title.calls  { color: #1a3a6b; }
+    .modal-title.emails { color: #6d3b8f; }
+    .modal-sub { font-size: 12.5px; color: #888; margin-bottom: 20px; }
+
+    .topics-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin-bottom: 22px;
+    }
+    .topic-check {
+      display: flex; align-items: center; gap: 9px;
+      padding: 10px 13px; border-radius: 9px;
+      border: 2px solid #eee; cursor: pointer;
+      transition: all 0.15s; user-select: none;
+    }
+    .topic-check:hover { border-color: #b0c4d8; background: #f5f9ff; }
+    .topic-check.calls.selected  { border-color: #2471a3; background: #eef5ff; }
+    .topic-check.emails.selected { border-color: #9b59b6; background: #f8f0ff; }
+    .topic-check input[type=checkbox] { display: none; }
+    .check-box {
+      width: 18px; height: 18px; border-radius: 5px;
+      border: 2px solid #ccc; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: white; transition: all 0.15s;
+    }
+    .topic-check.calls.selected  .check-box { border-color: #2471a3; background: #2471a3; }
+    .topic-check.emails.selected .check-box { border-color: #9b59b6; background: #9b59b6; }
+    .check-label { font-size: 13px; font-weight: 600; color: #333; }
+
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .btn-cancel {
+      padding: 9px 18px; border: 2px solid #ddd; border-radius: 8px;
+      background: none; color: #666; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-cancel:hover { border-color: #aaa; color: #333; }
+    .btn-confirm {
+      padding: 9px 22px; border: none; border-radius: 8px;
+      font-size: 13px; font-weight: 800; cursor: pointer;
+      transition: all 0.15s; color: white;
+    }
+    .btn-confirm.calls  { background: #2471a3; }
+    .btn-confirm.calls:hover  { background: #1a3a6b; }
+    .btn-confirm.emails { background: #9b59b6; }
+    .btn-confirm.emails:hover { background: #6d3b8f; }
+    .btn-confirm:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* ── OVERVIEW ── */
     .overview-section {
@@ -191,14 +204,8 @@
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 12px; margin-bottom: 16px;
     }
-    .ov-title { font-size: 15px; font-weight: 800; color: #1a3a6b; letter-spacing: 0.2px; }
+    .ov-title { font-size: 15px; font-weight: 800; color: #1a3a6b; }
     .ov-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-    .tab-btn {
-      padding: 7px 16px; border: 2px solid #2471a3; border-radius: 20px;
-      background: none; color: #2471a3; font-size: 12.5px; font-weight: 700;
-      cursor: pointer; transition: all 0.18s;
-    }
-    .tab-btn.active, .tab-btn:hover { background: #2471a3; color: white; }
     .period-btn {
       padding: 7px 14px; border: 2px solid #c5cdd6; border-radius: 20px;
       background: none; color: #666; font-size: 12.5px; font-weight: 700;
@@ -212,21 +219,25 @@
     }
     .btn-excel:hover { background: #196f3d; }
 
+    .ov-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 700px) { .ov-grid { grid-template-columns: 1fr; } }
+
+    .ov-block-title {
+      font-size: 13px; font-weight: 700; padding: 7px 10px 8px;
+      border-radius: 6px 6px 0 0; margin-bottom: 10px;
+    }
+    .ov-block-title.calls  { background: #f0f6ff; color: #1a3a6b; border-bottom: 2px solid #2471a3; }
+    .ov-block-title.emails { background: #faf0ff; color: #6d3b8f; border-bottom: 2px solid #9b59b6; }
+
     table.ov { width: 100%; border-collapse: collapse; font-size: 12px; }
     table.ov th {
       padding: 8px 9px; text-align: center; font-weight: 700;
-      color: #555; border-bottom: 2px solid #ddd; white-space: nowrap;
-      background: #f2f6fa;
+      color: #555; border-bottom: 2px solid #ddd; background: #f2f6fa; white-space: nowrap;
     }
-    table.ov th.col-d   { text-align: left; background: #e8f0f8; color: #1a3a6b; min-width: 100px; }
-    table.ov th.grp-ap  { background: #dbeeff; color: #1a3a6b; }
-    table.ov th.grp-em  { background: #f0e6ff; color: #6c3483; }
-    table.ov th.grp-ms  { background: #dbeeff; color: #1a3a6b; }
-    table.ov th.grp-mp  { background: #f0e6ff; color: #6c3483; }
-    table.ov th.grp-tot { background: #d5f5e3; color: #1a5e20; }
-    table.ov td {
-      padding: 7px 9px; text-align: center; border-bottom: 1px solid #f0f0f0;
-    }
+    table.ov th.col-d  { text-align: left; background: #e8f0f8; color: #1a3a6b; min-width: 90px; }
+    table.ov th.grp-ap { background: #dbeeff; color: #1a3a6b; }
+    table.ov th.grp-em { background: #f0e6ff; color: #6c3483; }
+    table.ov td { padding: 7px 9px; text-align: center; border-bottom: 1px solid #f0f0f0; }
     table.ov td.col-d { text-align: left; font-weight: 600; color: #333; white-space: nowrap; }
     table.ov tr:hover td { background: #f8fafc; }
     table.ov tr.is-today td { background: #fffde7; }
@@ -273,10 +284,24 @@
   <div>Connexion au serveur…</div>
 </div>
 
+<!-- ── MODAL ── -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-sub">Sélectionnez tous les sujets concernés par cette activité.</div>
+    <div class="topics-grid" id="topicsGrid"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="modalCancel">Annuler</button>
+      <button class="btn-confirm" id="modalConfirm">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── HEADER ── -->
 <div class="header">
   <div>
     <div class="header-title">📋 Suivi des Activités</div>
-    <div class="header-sub">Suivi journalier des appels et courriels</div>
+    <div class="header-sub">Suivi journalier des appels et courriels — MIFA</div>
   </div>
   <div class="conn-status">
     <div class="conn-dot" id="connDot"></div>
@@ -284,6 +309,7 @@
   </div>
 </div>
 
+<!-- ── DATE NAV ── -->
 <div class="date-bar">
   <button class="arrow" id="prevDay">‹</button>
   <div class="date-label" id="dateLabel">—</div>
@@ -294,42 +320,42 @@
 
 <div class="container">
 
-  <!-- Unified input table -->
-  <div class="input-section">
-    <div class="input-section-title">✏️ Saisie des activités</div>
-    <table class="act-grid" id="actGrid">
-      <thead>
-        <tr>
-          <th class="col-cat">Catégorie</th>
-          <th class="col-worker-ms">👤 Marc S.</th>
-          <th class="col-worker-mp">👤 Marc P.</th>
-        </tr>
-      </thead>
-      <tbody id="actBody">
-        <!-- rendered by JS -->
-      </tbody>
-    </table>
+  <!-- ── CALLS SECTION ── -->
+  <div class="act-section">
+    <div class="act-section-head calls">
+      <div class="act-section-title">
+        📞 Appels téléphoniques
+        <span class="act-section-count" id="callsCount">0 appel</span>
+      </div>
+      <button class="btn-new calls" id="btnNewCall">＋ Nouvel appel</button>
+    </div>
+    <div class="log-wrap" id="callsLog"></div>
   </div>
 
-  <!-- Overview -->
+  <!-- ── EMAILS SECTION ── -->
+  <div class="act-section">
+    <div class="act-section-head emails">
+      <div class="act-section-title">
+        ✉️ Courriels / E-mails
+        <span class="act-section-count" id="emailsCount">0 courriel</span>
+      </div>
+      <button class="btn-new emails" id="btnNewEmail">＋ Nouveau courriel</button>
+    </div>
+    <div class="log-wrap" id="emailsLog"></div>
+  </div>
+
+  <!-- ── OVERVIEW ── -->
   <div class="overview-section">
     <div class="ov-header">
       <div class="ov-title">📅 Vue d'ensemble</div>
       <div class="ov-controls">
-        <div style="display:flex;gap:5px">
-          <button class="tab-btn active" id="tab-all">Tous</button>
-          <button class="tab-btn"        id="tab-marcs">Marc S.</button>
-          <button class="tab-btn"        id="tab-marcp">Marc P.</button>
-        </div>
-        <div style="display:flex;gap:5px">
-          <button class="period-btn active" id="p7">7 j.</button>
-          <button class="period-btn"        id="p30">30 j.</button>
-          <button class="period-btn"        id="pAll">Tout</button>
-        </div>
+        <button class="period-btn active" id="p7">7 j.</button>
+        <button class="period-btn"        id="p30">30 j.</button>
+        <button class="period-btn"        id="pAll">Tout</button>
         <button class="btn-excel" id="btnExcel">⬇ Excel</button>
       </div>
     </div>
-    <div id="ovWrap"></div>
+    <div class="ov-grid" id="ovWrap"></div>
   </div>
 
 </div>
@@ -338,28 +364,26 @@
 
 <script>
 /* ══════════════════════════════════════════════════
-   CONFIGURATION
+   TOPICS
 ══════════════════════════════════════════════════ */
-const WORKERS = ['Marc S.', 'Marc P.'];
-
-const FIXED = [
-  { id: 'cai',            label: "CAI" },
+const TOPICS = [
+  { id: 'cie',            label: 'CIE' },
   { id: 'nationalite',    label: 'Nationalité' },
-  { id: 'code_langue',    label: 'Codes langue' },
+  { id: 'langue',         label: 'Langue' },
+  { id: 'codes',          label: 'Codes langue' },
   { id: 'participation',  label: 'Participation' },
   { id: 'cours_civiques', label: 'Cours civiques' },
-  { id: 'orientation',    label: "Orientation" },
+  { id: 'orientation',    label: 'Orientation' },
 ];
 
 /* ══════════════════════════════════════════════════
    STATE
+   S.days[date] = { calls: [{id, time, topics:[]}], emails: [...] }
 ══════════════════════════════════════════════════ */
 let S = {
-  date:       today(),
-  period:     7,
-  tab:        'all',
-  customCats: { appels: [], emails: [] },
-  workerData: {}
+  date:   today(),
+  period: 7,
+  days:   {}
 };
 
 /* ══════════════════════════════════════════════════
@@ -370,6 +394,10 @@ function localStr(d) {
 }
 function pad(n) { return String(n).padStart(2,'0'); }
 function today() { return localStr(new Date()); }
+function nowTime() {
+  const d = new Date();
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 function fmtLong(s) {
   const [y,m,d] = s.split('-').map(Number);
   return new Date(y,m-1,d).toLocaleDateString('fr-FR',
@@ -381,6 +409,12 @@ function fmtShort(s) {
     { weekday:'short', day:'numeric', month:'short' });
 }
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function uid()  { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+function getDayData(date) {
+  if (!S.days[date]) S.days[date] = { calls: [], emails: [] };
+  return S.days[date];
+}
 
 /* ══════════════════════════════════════════════════
    SOCKET.IO
@@ -388,27 +422,18 @@ function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 const socket = io();
 let saveTmr;
 
-socket.on('connect', () => {
-  setConnStatus('connected', 'Connecté · Synchronisation temps réel');
-});
-socket.on('disconnect', () => {
-  setConnStatus('disconnected', 'Déconnecté · Reconnexion…');
-});
+socket.on('connect', () => setConnStatus('connected', 'Connecté · Synchronisation temps réel'));
+socket.on('disconnect', () => setConnStatus('disconnected', 'Déconnecté · Reconnexion…'));
 socket.on('state', (serverState) => {
-  S.customCats = serverState.customCats || { appels: [], emails: [] };
-  S.workerData  = serverState.workerData  || {};
-  WORKERS.forEach(w => {
-    if (!S.workerData[w]) S.workerData[w] = { days: {} };
-  });
+  S.days = serverState.days || {};
   document.getElementById('loadingScreen').style.display = 'none';
   renderAll();
 });
 
 function setConnStatus(status, label) {
   const dot = document.getElementById('connDot');
-  const lbl = document.getElementById('connLabel');
   dot.className = 'conn-dot' + (status === 'connected' ? ' connected' : status === 'saving' ? ' saving' : '');
-  lbl.textContent = label;
+  document.getElementById('connLabel').textContent = label;
 }
 function flashSaving() {
   setConnStatus('saving', 'Sauvegarde…');
@@ -417,39 +442,86 @@ function flashSaving() {
 }
 
 /* ══════════════════════════════════════════════════
-   DATA HELPERS
+   MODAL
 ══════════════════════════════════════════════════ */
-function getDay(worker, d) {
-  return S.workerData[worker]?.days?.[d] || null;
-}
-function ensureDayLocal(worker, d) {
-  if (!S.workerData[worker]) S.workerData[worker] = { days: {} };
-  if (!S.workerData[worker].days[d])
-    S.workerData[worker].days[d] = { appels:{}, emails:{}, appels_custom:{}, emails_custom:{} };
-  return S.workerData[worker].days[d];
-}
-function getVal(day, type, id) {
-  if (!day || !day[type]) return 0;
-  return day[type][id] || 0;
-}
-function dayTotal(day, type) {
-  if (!day) return 0;
-  let t = 0;
-  const f = day[type]           || {}; for (const k in f) t += (f[k]||0);
-  const c = day[type+'_custom'] || {}; for (const k in c) t += (c[k]||0);
-  return t;
+let modalType = null;
+
+function openModal(type) {
+  modalType = type;
+  const isCalls = type === 'calls';
+
+  const title = document.getElementById('modalTitle');
+  title.className = `modal-title ${type}`;
+  title.textContent = isCalls ? '📞 Nouvel appel téléphonique' : '✉️ Nouveau courriel';
+
+  const confirm = document.getElementById('modalConfirm');
+  confirm.className = `btn-confirm ${type}`;
+
+  const grid = document.getElementById('topicsGrid');
+  grid.innerHTML = '';
+
+  for (const t of TOPICS) {
+    const item = document.createElement('label');
+    item.className = `topic-check ${type}`;
+    item.dataset.id = t.id;
+    item.innerHTML = `
+      <input type="checkbox" value="${t.id}" />
+      <div class="check-box"></div>
+      <span class="check-label">${t.label}</span>
+    `;
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      item.classList.toggle('selected');
+      const cb = item.querySelector('input');
+      cb.checked = !cb.checked;
+      item.querySelector('.check-box').textContent = cb.checked ? '✓' : '';
+      updateConfirmBtn();
+    });
+    grid.appendChild(item);
+  }
+
+  updateConfirmBtn();
+  document.getElementById('modalOverlay').classList.add('open');
 }
 
-/* ══════════════════════════════════════════════════
-   COUNTER ACTIONS
-══════════════════════════════════════════════════ */
-function change(worker, type, id, delta) {
-  const day = ensureDayLocal(worker, S.date);
-  if (!day[type]) day[type] = {};
-  day[type][id] = Math.max(0, (day[type][id]||0) + delta);
-  renderAll();
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  modalType = null;
+}
+
+function updateConfirmBtn() {
+  const any = document.querySelector('#topicsGrid input:checked');
+  document.getElementById('modalConfirm').disabled = !any;
+}
+
+document.getElementById('modalCancel').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+document.getElementById('modalConfirm').addEventListener('click', () => {
+  const checked = [...document.querySelectorAll('#topicsGrid input:checked')].map(cb => cb.value);
+  if (!checked.length) return;
+
+  const entry = { id: uid(), time: nowTime(), topics: checked };
+  const day = getDayData(S.date);
+  day[modalType].push(entry);
+
   flashSaving();
-  socket.emit('update_counter', { worker, date: S.date, type, catId: id, isCustom: false, delta });
+  socket.emit('add_entry', { date: S.date, type: modalType, entry });
+  closeModal();
+  renderAll();
+  toast(modalType === 'calls' ? '📞 Appel enregistré !' : '✉️ Courriel enregistré !');
+});
+
+/* ══════════════════════════════════════════════════
+   DELETE ENTRY
+══════════════════════════════════════════════════ */
+function deleteEntry(type, entryId) {
+  const day = getDayData(S.date);
+  day[type] = day[type].filter(e => e.id !== entryId);
+  flashSaving();
+  socket.emit('delete_entry', { date: S.date, type, entryId });
+  renderAll();
 }
 
 /* ══════════════════════════════════════════════════
@@ -458,119 +530,57 @@ function change(worker, type, id, delta) {
 function renderAll() {
   document.getElementById('dateLabel').textContent = cap(fmtLong(S.date));
   document.getElementById('datePick').value = S.date;
-  renderInputTable();
+  renderLog('calls');
+  renderLog('emails');
   renderOverview();
 }
 
-/* ── Unified input table ── */
-function renderInputTable() {
-  const tbody = document.getElementById('actBody');
-  tbody.innerHTML = '';
+function renderLog(type) {
+  const day     = getDayData(S.date);
+  const entries = day[type] || [];
+  const isCalls = type === 'calls';
+  const n = entries.length;
 
-  const days = {
-    'Marc S.': getDay('Marc S.', S.date),
-    'Marc P.': getDay('Marc P.', S.date)
-  };
+  const badge = document.getElementById(type === 'calls' ? 'callsCount' : 'emailsCount');
+  badge.textContent = isCalls
+    ? `${n} appel${n !== 1 ? 's' : ''}`
+    : `${n} courriel${n !== 1 ? 's' : ''}`;
 
-  const TYPES = [
-    { key: 'appels', label: '📞 Appels téléphoniques', cls: 'appels' },
-    { key: 'emails', label: '✉️ Courriels / E-mails',  cls: 'emails' }
-  ];
+  const wrap = document.getElementById(type === 'calls' ? 'callsLog' : 'emailsLog');
 
-  let grandMS = 0, grandMP = 0;
-
-  for (const tp of TYPES) {
-    // Section header row
-    const hdr = tbody.insertRow();
-    hdr.className = `type-hdr ${tp.cls}`;
-    const hdrCell = hdr.insertCell();
-    hdrCell.colSpan = 3;
-    hdrCell.textContent = tp.label;
-    hdrCell.style.fontWeight = '800';
-
-    let subMS = 0, subMP = 0;
-
-    for (const cat of FIXED) {
-      const row = tbody.insertRow();
-      row.className = 'data-row';
-
-      const catCell = row.insertCell();
-      catCell.className = 'cat-label';
-      catCell.textContent = cat.label;
-
-      for (const wn of WORKERS) {
-        const cell = row.insertCell();
-        cell.className = 'ctrl-cell';
-        const val = getVal(days[wn], tp.key, cat.id);
-        if (wn === 'Marc S.') subMS += val;
-        else                  subMP += val;
-        const ctrl = makeCounter(val,
-          (delta) => change(wn, tp.key, cat.id, delta));
-        cell.appendChild(ctrl);
-      }
-    }
-
-    grandMS += subMS;
-    grandMP += subMP;
-
-    // Subtotal row for this type
-    const sub = tbody.insertRow();
-    sub.className = 'subtotal-row';
-    const subLbl = sub.insertCell();
-    subLbl.className = 'cat-label';
-    subLbl.textContent = `Sous-total ${tp.cls === 'appels' ? 'Appels' : 'E-mails'}`;
-    const subMSCell = sub.insertCell();
-    subMSCell.className = 'sub-ms';
-    subMSCell.textContent = subMS;
-    const subMPCell = sub.insertCell();
-    subMPCell.className = 'sub-mp';
-    subMPCell.textContent = subMP;
+  if (entries.length === 0) {
+    wrap.innerHTML = `<div class="log-empty">Aucun ${isCalls ? 'appel' : 'courriel'} enregistré pour ce jour.</div>`;
+    return;
   }
 
-  // Grand total row
-  const gt = tbody.insertRow();
-  gt.className = 'grand-total';
-  const gtLbl = gt.insertCell();
-  gtLbl.className = 'cat-label';
-  gtLbl.textContent = 'TOTAL DU JOUR';
-  const gtMS = gt.insertCell();
-  gtMS.textContent = grandMS;
-  const gtMP = gt.insertCell();
-  gtMP.textContent = grandMP;
-}
+  let html = `<table class="log-table">
+    <thead><tr>
+      <th class="th-time">Heure</th>
+      <th>Sujets</th>
+      <th class="th-del"></th>
+    </tr></thead><tbody>`;
 
-function makeCounter(val, onDelta) {
-  const wrap = document.createElement('div');
-  wrap.className = 'c-ctrl';
+  for (const entry of entries) {
+    const tags = entry.topics.map(tid => {
+      const t = TOPICS.find(x => x.id === tid);
+      return `<span class="topic-tag ${type}">${t ? t.label : tid}</span>`;
+    }).join('');
+    html += `<tr>
+      <td class="td-time">${entry.time}</td>
+      <td>${tags}</td>
+      <td><button class="btn-del" title="Supprimer" onclick="deleteEntry('${type}','${entry.id}')">✕</button></td>
+    </tr>`;
+  }
 
-  const minus = document.createElement('button');
-  minus.className = 'c-minus';
-  minus.textContent = '−';
-  minus.addEventListener('click', () => onDelta(-1));
-
-  const valEl = document.createElement('div');
-  valEl.className = 'c-val';
-  valEl.textContent = val;
-
-  const plus = document.createElement('button');
-  plus.className = 'c-plus';
-  plus.textContent = '+';
-  plus.addEventListener('click', () => onDelta(1));
-
-  wrap.append(minus, valEl, plus);
-  return wrap;
+  html += `</tbody></table>`;
+  wrap.innerHTML = html;
 }
 
 /* ══════════════════════════════════════════════════
    OVERVIEW
 ══════════════════════════════════════════════════ */
-function getFilteredDates(workers) {
-  let allDates = new Set();
-  for (const wn of workers) {
-    const w = S.workerData[wn];
-    if (w && w.days) Object.keys(w.days).forEach(d => allDates.add(d));
-  }
-  let dates = [...allDates].sort().reverse();
+function getFilteredDates() {
+  let dates = Object.keys(S.days).sort().reverse();
   if (S.period > 0) {
     const cut = new Date(); cut.setDate(cut.getDate() - S.period + 1);
     dates = dates.filter(d => d >= localStr(cut));
@@ -578,127 +588,71 @@ function getFilteredDates(workers) {
   return dates;
 }
 
-function setTab(t) {
-  S.tab = t;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  const ids = { all: 'tab-all', 'Marc S.': 'tab-marcs', 'Marc P.': 'tab-marcp' };
-  document.getElementById(ids[t])?.classList.add('active');
-  renderOverview();
-}
 function setPeriod(n) {
   S.period = n;
   document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(n===7?'p7':n===30?'p30':'pAll')?.classList.add('active');
+  document.getElementById(n === 7 ? 'p7' : n === 30 ? 'p30' : 'pAll').classList.add('active');
   renderOverview();
 }
 
 function renderOverview() {
   const wrap     = document.getElementById('ovWrap');
   const todayStr = today();
+  const dates    = getFilteredDates();
 
-  if (S.tab === 'all') {
-    /* ── GLOBAL: combined dates, both workers ── */
-    const dates = getFilteredDates(WORKERS);
-    if (dates.length === 0) {
-      wrap.innerHTML = '<div class="empty">Aucune donnée pour cette période.</div>';
-      return;
-    }
-
-    function buildCombinedTypeTable(type, groupCls) {
-      const accCat = {}; for (const c of FIXED) accCat[c.id] = 0;
-      let accTotal = 0;
-      let h = `<table class="ov">
-        <thead><tr>
-          <th class="col-d">Date</th>`;
-      for (const c of FIXED) h += `<th class="${groupCls}" style="font-size:10.5px;font-weight:600">${c.label}</th>`;
-      h += `<th class="${groupCls}">Total</th></tr></thead><tbody>`;
-
-      for (const d of dates) {
-        const isToday = d === todayStr;
-        let rowTotal = 0;
-        h += `<tr class="${isToday ? 'is-today' : ''}">
-          <td class="col-d">${isToday ? '⭐ ' : ''}${fmtShort(d)}</td>`;
-        for (const c of FIXED) {
-          let v = 0;
-          for (const wn of WORKERS) v += getVal(getDay(wn, d), type, c.id);
-          rowTotal += v; accCat[c.id] += v;
-          h += `<td><span class="${v ? '' : 'z'}">${v || '—'}</span></td>`;
-        }
-        accTotal += rowTotal;
-        h += `<td class="sub-t">${rowTotal || '—'}</td></tr>`;
-      }
-
-      h += `</tbody><tfoot><tr><td class="col-d">TOTAL</td>`;
-      for (const c of FIXED) h += `<td>${accCat[c.id] || 0}</td>`;
-      h += `<td>${accTotal}</td></tr></tfoot></table>`;
-      return h;
-    }
-
-    wrap.innerHTML = `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-        <div>
-          <div style="font-size:13px;font-weight:700;padding:7px 10px 8px;border-bottom:2px solid #2471a3;border-radius:6px 6px 0 0;margin-bottom:10px;color:#1a3a6b;background:#f0f6ff;">📞 Appels téléphoniques</div>
-          ${buildCombinedTypeTable('appels', 'grp-ap')}
-        </div>
-        <div>
-          <div style="font-size:13px;font-weight:700;padding:7px 10px 8px;border-bottom:2px solid #9b59b6;border-radius:6px 6px 0 0;margin-bottom:10px;color:#6d3b8f;background:#faf0ff;">✉️ Courriels / E-mails</div>
-          ${buildCombinedTypeTable('emails', 'grp-em')}
-        </div>
-      </div>`;
-
-  } else {
-    /* ── INDIVIDUAL WORKER VIEW ── */
-    const wn    = S.tab;
-    const dates = getFilteredDates([wn]);
-    if (dates.length === 0) {
-      wrap.innerHTML = '<div class="empty">Aucune donnée pour cette période.</div>';
-      return;
-    }
-
-    const groupCls = wn === 'Marc S.' ? 'grp-ms' : 'grp-mp';
-
-    function buildTypeTable(type) {
-      const accCat = {}; for (const c of FIXED) accCat[c.id] = 0;
-      let accTotal = 0;
-      let h = `<table class="ov">
-        <thead><tr>
-          <th class="col-d">Date</th>`;
-      for (const c of FIXED) h += `<th class="${groupCls}" style="font-size:10.5px;font-weight:600">${c.label}</th>`;
-      h += `<th class="${groupCls}">Total</th></tr></thead><tbody>`;
-
-      for (const d of dates) {
-        const isToday = d === todayStr;
-        const day = getDay(wn, d);
-        let rowTotal = 0;
-        h += `<tr class="${isToday ? 'is-today' : ''}">
-          <td class="col-d">${isToday ? '⭐ ' : ''}${fmtShort(d)}</td>`;
-        for (const c of FIXED) {
-          const v = getVal(day, type, c.id);
-          rowTotal += v; accCat[c.id] += v;
-          h += `<td><span class="${v ? '' : 'z'}">${v || '—'}</span></td>`;
-        }
-        accTotal += rowTotal;
-        h += `<td class="sub-t">${rowTotal || '—'}</td></tr>`;
-      }
-
-      h += `</tbody><tfoot><tr><td class="col-d">TOTAL</td>`;
-      for (const c of FIXED) h += `<td>${accCat[c.id] || 0}</td>`;
-      h += `<td>${accTotal}</td></tr></tfoot></table>`;
-      return h;
-    }
-
-    wrap.innerHTML = `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-        <div>
-          <div style="font-size:13px;font-weight:700;padding:7px 10px 8px;border-bottom:2px solid #2471a3;border-radius:6px 6px 0 0;margin-bottom:10px;color:#1a3a6b;background:#f0f6ff;">📞 Appels téléphoniques</div>
-          ${buildTypeTable('appels')}
-        </div>
-        <div>
-          <div style="font-size:13px;font-weight:700;padding:7px 10px 8px;border-bottom:2px solid #9b59b6;border-radius:6px 6px 0 0;margin-bottom:10px;color:#6d3b8f;background:#faf0ff;">✉️ Courriels / E-mails</div>
-          ${buildTypeTable('emails')}
-        </div>
-      </div>`;
+  if (dates.length === 0) {
+    wrap.innerHTML = '<div class="empty" style="grid-column:1/-1">Aucune donnée pour cette période.</div>';
+    return;
   }
+
+  function buildTable(type, groupCls) {
+    const accTopic = {};
+    for (const t of TOPICS) accTopic[t.id] = 0;
+    let accTotal = 0;
+
+    let h = `<table class="ov"><thead><tr>
+      <th class="col-d">Date</th>`;
+    for (const t of TOPICS)
+      h += `<th class="${groupCls}" style="font-size:10.5px;font-weight:600">${t.label}</th>`;
+    h += `<th class="${groupCls}">Total</th></tr></thead><tbody>`;
+
+    for (const d of dates) {
+      const entries = (S.days[d] || {})[type] || [];
+      const isToday = d === todayStr;
+      const topicCounts = {};
+      for (const t of TOPICS) topicCounts[t.id] = 0;
+      for (const e of entries)
+        for (const tid of e.topics)
+          if (topicCounts[tid] !== undefined) topicCounts[tid]++;
+
+      const rowTotal = entries.length;
+      accTotal += rowTotal;
+
+      h += `<tr class="${isToday ? 'is-today' : ''}">
+        <td class="col-d">${isToday ? '⭐ ' : ''}${fmtShort(d)}</td>`;
+      for (const t of TOPICS) {
+        const v = topicCounts[t.id];
+        accTopic[t.id] += v;
+        h += `<td><span class="${v ? '' : 'z'}">${v || '—'}</span></td>`;
+      }
+      h += `<td class="sub-t">${rowTotal || '—'}</td></tr>`;
+    }
+
+    h += `</tbody><tfoot><tr><td class="col-d">TOTAL</td>`;
+    for (const t of TOPICS) h += `<td>${accTopic[t.id] || 0}</td>`;
+    h += `<td>${accTotal}</td></tr></tfoot></table>`;
+    return h;
+  }
+
+  wrap.innerHTML = `
+    <div>
+      <div class="ov-block-title calls">📞 Appels téléphoniques</div>
+      ${buildTable('calls', 'grp-ap')}
+    </div>
+    <div>
+      <div class="ov-block-title emails">✉️ Courriels / E-mails</div>
+      ${buildTable('emails', 'grp-em')}
+    </div>`;
 }
 
 /* ══════════════════════════════════════════════════
@@ -706,44 +660,26 @@ function renderOverview() {
 ══════════════════════════════════════════════════ */
 function exportExcel() {
   const wb = XLSX.utils.book_new();
-  const cA = S.customCats.appels || [];
-  const cE = S.customCats.emails || [];
 
-  for (const wn of WORKERS) {
-    const w = S.workerData[wn];
-    if (!w || !w.days || Object.keys(w.days).length === 0) continue;
+  for (const type of ['calls', 'emails']) {
+    const label = type === 'calls' ? 'Appels' : 'Emails';
+    const headers = ['Date', 'Heure', ...TOPICS.map(t => t.label)];
+    const rows = [headers];
 
-    const headers = ['Date'];
-    for (const c of FIXED) headers.push('Appels – '+c.label);
-    for (const c of cA)    headers.push('Appels – '+c);
-    headers.push('Total Appels');
-    for (const c of FIXED) headers.push('E-mails – '+c.label);
-    for (const c of cE)    headers.push('E-mails – '+c);
-    headers.push('Total E-mails','TOTAL');
-
-    const rows  = [headers];
-    const dates = Object.keys(w.days).sort();
-    for (const d of dates) {
-      const day = w.days[d];
-      const row = [d]; let tA=0, tE=0;
-      for (const c of FIXED) { const v=getVal(day,'appels',c.id);     row.push(v); tA+=v; }
-      for (const c of cA)    { const v=(day.appels_custom||{})[c]||0; row.push(v); tA+=v; }
-      row.push(tA);
-      for (const c of FIXED) { const v=getVal(day,'emails',c.id);     row.push(v); tE+=v; }
-      for (const c of cE)    { const v=(day.emails_custom||{})[c]||0; row.push(v); tE+=v; }
-      row.push(tE, tA+tE);
-      rows.push(row);
+    for (const d of Object.keys(S.days).sort()) {
+      const entries = (S.days[d] || {})[type] || [];
+      for (const e of entries) {
+        const row = [d, e.time];
+        for (const t of TOPICS) row.push(e.topics.includes(t.id) ? 1 : 0);
+        rows.push(row);
+      }
     }
-    const tot = ['TOTAL'];
-    for (let i=1; i<headers.length; i++)
-      tot.push(rows.slice(1).reduce((s,r)=>s+(r[i]||0), 0));
-    rows.push(tot);
 
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{wch:14},
-      ...FIXED.map(()=>({wch:18})), ...cA.map(()=>({wch:14})), {wch:13},
-      ...FIXED.map(()=>({wch:18})), ...cE.map(()=>({wch:14})), {wch:13},{wch:9}];
-    XLSX.utils.book_append_sheet(wb, ws, wn.replace(/\./g,''));
+    if (rows.length > 1) {
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      ws['!cols'] = [{wch:12},{wch:8},...TOPICS.map(()=>({wch:14}))];
+      XLSX.utils.book_append_sheet(wb, ws, label);
+    }
   }
 
   if (wb.SheetNames.length === 0) { alert('Aucune donnée à exporter.'); return; }
@@ -760,12 +696,15 @@ function toast(msg) {
   el.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTmr);
-  toastTmr = setTimeout(()=>el.classList.remove('show'), 2500);
+  toastTmr = setTimeout(() => el.classList.remove('show'), 2500);
 }
 
 /* ══════════════════════════════════════════════════
-   WIRE UP BUTTONS
+   WIRE UP
 ══════════════════════════════════════════════════ */
+document.getElementById('btnNewCall').addEventListener('click',  () => openModal('calls'));
+document.getElementById('btnNewEmail').addEventListener('click', () => openModal('emails'));
+
 document.getElementById('prevDay').addEventListener('click', () => {
   const [y,m,d] = S.date.split('-').map(Number);
   const dt = new Date(y,m-1,d); dt.setDate(dt.getDate()-1);
@@ -776,24 +715,16 @@ document.getElementById('nextDay').addEventListener('click', () => {
   const dt = new Date(y,m-1,d); dt.setDate(dt.getDate()+1);
   S.date = localStr(dt); renderAll();
 });
-document.getElementById('todayBtn').addEventListener('click', () => {
-  S.date = today(); renderAll();
-});
+document.getElementById('todayBtn').addEventListener('click', () => { S.date = today(); renderAll(); });
 document.getElementById('datePick').addEventListener('change', (e) => {
   if (e.target.value) { S.date = e.target.value; renderAll(); }
 });
 
-document.getElementById('tab-all').addEventListener('click',   () => setTab('all'));
-document.getElementById('tab-marcs').addEventListener('click', () => setTab('Marc S.'));
-document.getElementById('tab-marcp').addEventListener('click', () => setTab('Marc P.'));
-
 document.getElementById('p7').addEventListener('click',   () => setPeriod(7));
 document.getElementById('p30').addEventListener('click',  () => setPeriod(30));
 document.getElementById('pAll').addEventListener('click', () => setPeriod(0));
-
 document.getElementById('btnExcel').addEventListener('click', exportExcel);
 
-/* ── Init ── */
 renderAll();
 </script>
 </body>
